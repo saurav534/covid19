@@ -18,7 +18,7 @@ func main() {
 			"index.html",
 			// Pass the data that the page uses (in this case, 'title')
 			gin.H{
-				"title": "Home Page",
+				"title": "COVID-19",
 				"data" : coronaUpdate,
 			},
 		)

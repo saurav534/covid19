@@ -42,9 +42,9 @@ func LiveData() *common.CoronaUpdate {
 }
 
 func parseNode(node *html.Node, update *common.CoronaUpdate) {
-	if strings.Contains(node.Data, "(*including foreign nationals") {
-		t := strings.TrimPrefix(node.Data, "(*including foreign nationals, as on ")
-		update.UpdateTime = strings.TrimSuffix(t, ")")
+	if strings.Contains(node.Data, "foreign Nationals, as on") {
+		split := strings.Split(node.Data, "foreign Nationals, as on")
+		update.UpdateTime = strings.TrimSuffix(split[1], ")")
 		return
 	}
 
@@ -96,19 +96,16 @@ func setStateWise(tbody *html.Node, update *common.CoronaUpdate) {
 					case 1:
 						st.Name = td.FirstChild.Data
 					case 2:
-						st.TotalIndian = td.FirstChild.Data
+						st.Total = td.FirstChild.Data
 					case 3:
-						st.TotalForeign = td.FirstChild.Data
-					case 4:
 						st.LiveExit = td.FirstChild.Data
-					case 5:
+					case 4:
 						st.Death = td.FirstChild.Data
 					}
 					index = index + 1
 				}
 			}
 			if !ignore {
-				st.Total = strconv.Itoa(toInt(st.TotalIndian) + toInt(st.TotalForeign))
 				update.StateWise = append(update.StateWise, st)
 			}
 		}
