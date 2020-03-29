@@ -158,11 +158,43 @@
 </div>
 <div class="col-xs-12">
     <div class="col-12" style="font-size: 18px; font-weight: bold; margin-bottom: 10px">Important Links</div>
+    <div class="col-12">
+        <a href="{{.data.DistrictWise}}">
+            <span style="margin-right: 5px" class="float-left"><img
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="></span>
+            <span style="word-wrap: break-word;">District Wise Cases</span>
+        </a>
+    </div>
+    <div class="col-12">
+        <a href="{{.data.HelpLine}}">
+            <span style="margin-right: 5px" class="float-left"><img
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="></span>
+            <span style="word-wrap: break-word;">COVID-19 Helpline</span>
+        </a>
+    </div>
+    <div class="col-12">
+        <a href="{{.data.Faq}}">
+            <span style="margin-right: 5px" class="float-left"><img
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="></span>
+            <span style="word-wrap: break-word;">COVID-19 FAQ</span>
+        </a>
+    </div>
+    <div class="col-12">
+        <a href="{{.data.Youtube}}">
+            <span style="margin-right: 5px" class="float-left"><img
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="></span>
+            <span style="word-wrap: break-word;">Ministry of Health Youtube channel</span>
+        </a>
+    </div>
+</div>
+<div class="col-xs-12">
+    <div class="col-12" style="font-size: 18px; font-weight: bold; margin-bottom: 10px; margin-top: 15px">Other Links</div>
     {{ with .data.Links }}
         {{ range . }}
             <div class="col-12">
                 <a href="{{.}}">
-                    <span style="float: left; margin-right: 5px"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="></span>
+                    <span style="margin-right: 5px" class="float-left"><img
+                                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="></span>
                     <span style="word-wrap: break-word;">{{.}}</span></a></div>
         {{ end }}
     {{end}}

@@ -9,6 +9,10 @@ type CoronaUpdate struct {
 	Migrated          string       `json:"migrated"`
 	ScreenedAtAirport string       `json:"screened_at_airport"`
 	StateWise         []*StateData `json:"state_wise"`
+	Youtube           string       `json:"youtube"`
+	DistrictWise      string       `json:"district_wise"`
+	HelpLine          string       `json:"help_line"`
+	Faq               string       `json:"faq"`
 	Links             []string     `json:"links"`
 }
 
