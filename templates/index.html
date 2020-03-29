@@ -6,29 +6,120 @@
 <head>
     <!--Use the title variable to set the title of the page-->
     <title>{{ .title }}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no user-scalable=no">
 
     <!--Use bootstrap to make the application look nice-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <script async src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
             crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script>
+        function filterState() {
+            var text = $("#state-filter").val();
+            $(".state-card").each(function () {
+                if ($(this).attr("state").toLowerCase().indexOf(text.toLowerCase()) < 0) {
+                    $(this).css("display", "none")
+                } else {
+                    $(this).css("display", "")
+                }
+            })
+        }
+    </script>
+
 </head>
 
-<body class="container">
-<nav class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="/">
-                Home
-            </a>
+<body>
+<nav class="navbar navbar-light bg-light" style="position: fixed;
+    z-index: 100;
+    width: 100%;
+    box-shadow: 0px 1px 7px 0px grey;">
+    <a class="navbar-brand" href="#">
+        <span class="badge badge-info" style="font-size: 18px;">COVID-19</span>
+        <span class="col-6" style="font-size: 15px">{{.data.UpdateTime}}</span>
+    </a>
+</nav>
+<div style="height: 70px"></div>
+<div class="col-xs-12">
+    <div class="col-12" style="font-size: 18px; font-weight: bold; margin-bottom: 10px">Pan India Status</div>
+    <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <tr class="table-warning">
+                    <td>Total Cases</td>
+                    <td>{{.data.Total}}</td>
+                </tr>
+                <tr class="table-active">
+                    <td>Active COVID 2019 cases</td>
+                    <td>{{.data.Active}}</td>
+                </tr>
+                <tr class="table-success">
+                    <td>Cured/discharged cases</td>
+                    <td>{{.data.Cured}}</td>
+                </tr>
+                <tr class="table-danger">
+                    <td>Death</td>
+                    <td>{{.data.Death}}</td>
+                </tr>
+                <tr>
+                    <td>Migrated COVID-19 Patient</td>
+                    <td>{{.data.Migrated}}</td>
+                </tr>
+                <tr class="table-info">
+                    <td>Passengers screened at airport</td>
+                    <td>{{.data.ScreenedAtAirport}}</td>
+                </tr>
+            </table>
         </div>
     </div>
-</nav>
+</div>
 
-<h1>Hello Gi! {{.title}}</h1>
-
+<div class="col-12">
+    <div class="row">
+        <div class="col-6" style="font-size: 18px; font-weight: bold; padding-top: 5px">State wise Status
+        </div>
+        <div class="col-6">
+            <input id="state-filter" class="form-control" placeholder="State Name" onkeyup="filterState()">
+        </div>
+    </div>
+</div>
+<div class="col-12" id="all-state" style="margin-top: 15px">
+    {{ with .data.StateWise }}
+        {{ range . }}
+            <div class="state-card card bg-light border-dark mb-3" state="{{.Name}}" style="max-width: 24rem;">
+                <div class="card-header" style="font-weight: bold; font-size: 17px">
+                    <span>{{.Name}}</span>
+                    <span class="badge badge-danger float-right">{{.Total}}</span>
+                </div>
+                <div class="card-body text-dark" style="padding: 1.05rem">
+                    <div class="col-xs-12">
+                        <table width="100%">
+                            <tr>
+                                <td style="font-weight: bold">Indian Cases</td>
+                                <td style="font-weight: bold" class="float-right">{{.TotalIndian}}</td>
+                            </tr>
+                            <tr>
+                                <td>Foreign Cases</td>
+                                <td class="float-right">{{.TotalForeign}}</td>
+                            </tr>
+                            <tr>
+                                <td>Cured/Discharged/Migrated</td>
+                                <td class="float-right">{{.LiveExit}}</td>
+                            </tr>
+                            <tr>
+                                <td>Death</td>
+                                <td class="float-right">{{.Death}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {{ end }}
+    {{end}}
+</div>
 </body>
 </html>
