@@ -84,8 +84,13 @@ func setStateWise(tbody *html.Node, update *common.CoronaUpdate) {
 		if isElementNode(tr, "tr") {
 			st := &common.StateData{}
 			index := 0
+			ignore := false
 			for td := tr.FirstChild; td != nil; td = td.NextSibling {
 				if isElementNode(td, "td") {
+					if td.FirstChild.Data == "strong" {
+						ignore = true
+						break
+					}
 					switch index {
 					case 0:
 					case 1:
@@ -102,8 +107,10 @@ func setStateWise(tbody *html.Node, update *common.CoronaUpdate) {
 					index = index + 1
 				}
 			}
-			st.Total = strconv.Itoa(toInt(st.TotalIndian) + toInt(st.TotalForeign))
-			update.StateWise = append(update.StateWise, st)
+			if !ignore {
+				st.Total = strconv.Itoa(toInt(st.TotalIndian) + toInt(st.TotalForeign))
+				update.StateWise = append(update.StateWise, st)
+			}
 		}
 	}
 }
