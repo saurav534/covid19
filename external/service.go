@@ -50,7 +50,7 @@ func parseNode(node *html.Node, update *common.CoronaUpdate) {
 
 	if isElementNode(node, "a") {
 		url := fetchUrl(node)
-		if url != "" {
+		if url != "" && strings.Contains(url,"mohfw") {
 			update.Links = append(update.Links, url)
 		}
 		return

@@ -30,7 +30,8 @@
             })
         }
     </script>
-    <script data-ad-client="ca-pub-8842415115243274" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script data-ad-client="ca-pub-8842415115243274" async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 </head>
 
 <body>
@@ -46,7 +47,7 @@
 <div style="height: 70px"></div>
 <div class="col-xs-12">
     <div class="col-12" style="font-size: 18px; font-weight: bold; margin-bottom: 10px">Pan India Status</div>
-    <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6">
+    <div class="col-12">
         <div class="table-responsive">
             <table class="table table-hover">
                 <tr class="table-warning">
@@ -65,7 +66,7 @@
                     <td>Death</td>
                     <td>{{.data.Death}}</td>
                 </tr>
-                <tr>
+                <tr class="table-light">
                     <td>Migrated COVID-19 Patient</td>
                     <td>{{.data.Migrated}}</td>
                 </tr>
@@ -87,35 +88,40 @@
         </div>
     </div>
 </div>
-<div class="col-12" id="all-state" style="margin-top: 15px">
-    {{ with .data.StateWise }}
-        {{ range . }}
-            <div class="state-card card bg-light border-dark mb-3" state="{{.Name}}" style="max-width: 24rem;">
-                <div class="card-header" style="font-weight: bold; font-size: 17px">
-                    <span>{{.Name}}</span>
-                    <span class="badge badge-danger float-right">{{.Total}}</span>
-                </div>
-                <div class="card-body text-dark" style="padding: 1.05rem">
-                    <div class="col-xs-12">
-                        <table width="100%">
-                            <tr>
-                                <td style="font-weight: bold">Total Cases</td>
-                                <td style="font-weight: bold" class="float-right">{{.Total}}</td>
-                            </tr>
-                            <tr>
-                                <td>Cured/Discharged/Migrated</td>
-                                <td class="float-right">{{.LiveExit}}</td>
-                            </tr>
-                            <tr>
-                                <td>Death</td>
-                                <td class="float-right">{{.Death}}</td>
-                            </tr>
-                        </table>
+<div class="container">
+    <div class="row" id="all-state" style="margin-top: 15px">
+        {{ with .data.StateWise }}
+            {{ range . }}
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                    <div class="state-card card bg-light border-dark mb-3" state="{{.Name}}"
+                         style="max-width: 24rem;">
+                        <div class="card-header" style="font-weight: bold; font-size: 17px">
+                            <span>{{.Name}}</span>
+                            <span class="badge badge-danger float-right">{{.Total}}</span>
+                        </div>
+                        <div class="card-body text-dark" style="padding: 1.05rem">
+                            <div class="col-xs-12">
+                                <table width="100%">
+                                    <tr>
+                                        <td style="font-weight: bold">Total Cases</td>
+                                        <td style="font-weight: bold" class="float-right">{{.Total}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cured/Discharged/Migrated</td>
+                                        <td class="float-right">{{.LiveExit}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Death</td>
+                                        <td class="float-right">{{.Death}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {{ end }}
-    {{end}}
+            {{ end }}
+        {{end}}
+    </div>
 </div>
 <div style="position: fixed;
     bottom: 0;
@@ -133,7 +139,8 @@
             © 2020-2021 Saurav Singh
         </div>
         <div class="col-1">
-            <a class="navbar-brand float-right" href="https://www.facebook.com/saurav431" style="cursor: pointer; padding-top: 3px;">
+            <a class="navbar-brand float-right" href="https://www.facebook.com/saurav431"
+               style="cursor: pointer; padding-top: 3px;">
                 <img style="height: 20px;"
                      src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/facebook-icon_square_24x24.png"
                      alt="Twitter Icon">
@@ -149,5 +156,17 @@
         </div>
     </div>
 </div>
+<div class="col-xs-12">
+    <div class="col-12" style="font-size: 18px; font-weight: bold; margin-bottom: 10px">Important Links</div>
+    {{ with .data.Links }}
+        {{ range . }}
+            <div class="col-12">
+                <a href="{{.}}">
+                    <span style="float: left; margin-right: 5px"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="></span>
+                    <span style="word-wrap: break-word;">{{.}}</span></a></div>
+        {{ end }}
+    {{end}}
+</div>
+<div style="height: 50px"></div>
 </body>
 </html>
