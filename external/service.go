@@ -2,6 +2,7 @@ package external
 
 import (
 	"covid19/common"
+	"fmt"
 	"github.com/cenkalti/backoff/v4"
 	"golang.org/x/net/html"
 	"log"
@@ -11,7 +12,18 @@ import (
 	"time"
 )
 
+var updateTime int64
+var data *common.CoronaUpdate
+
 func LiveData() *common.CoronaUpdate {
+	millisNow := time.Now().UnixNano() / 1000000
+	diff := (millisNow - updateTime) / (1000)
+
+	if diff <= 1 && data != nil {
+		log.Printf("Data from cache found %v", diff)
+		return data
+	}
+
 	constantBackoff := backoff.NewConstantBackOff(500 * time.Millisecond)
 	var resp *http.Response
 	var err error
@@ -35,8 +47,24 @@ func LiveData() *common.CoronaUpdate {
 	node, _ := html.Parse(resp.Body)
 	defer resp.Body.Close()
 	parseNode(node, update)
-	update.Total = strconv.Itoa(toInt(update.Active) + toInt(update.Cured) +
-		toInt(update.Migrated) + toInt(update.Death))
+	cured := toInt(update.Cured)
+	death := toInt(update.Death)
+	closed := cured + death
+	update.Total = strconv.Itoa(toInt(update.Active) + cured +
+		toInt(update.Migrated) + death)
+
+	update.Closed = strconv.Itoa(cured + death)
+	if closed != 0 {
+		update.FatalPercent = fmt.Sprintf("%.2f", (float32(death*100))/float32(closed))
+		update.LivePercent = fmt.Sprintf("%.2f", (float32((cured)*100))/float32(closed))
+	} else {
+		update.FatalPercent = "0"
+		update.LivePercent = "0"
+	}
+
+	// updating cache time
+	updateTime = millisNow
+	data = update
 
 	return update
 }
@@ -53,6 +81,10 @@ func parseNode(node *html.Node, update *common.CoronaUpdate) {
 		if url != "" {
 			if strings.Contains(url, "youtube") {
 				update.Youtube = url
+			} else if strings.Contains(url, "twitter") {
+				update.Twitter = url
+			} else if strings.Contains(url, "facebook") {
+				update.Facebook = url
 			} else if strings.Contains(url, "District") {
 				update.DistrictWise = url
 			} else if strings.Contains(url, "FAQ") {
@@ -116,6 +148,17 @@ func setStateWise(tbody *html.Node, update *common.CoronaUpdate) {
 				}
 			}
 			if !ignore {
+				live := toInt(st.LiveExit)
+				death := toInt(st.Death)
+				closed := live + death
+				st.Closed = strconv.Itoa(closed)
+				if closed != 0 {
+					st.FatalPercent = fmt.Sprintf("%.2f", (float32(death*100))/float32(closed)) + " %"
+					st.LivePercent = fmt.Sprintf("%.2f", (float32((live)*100))/float32(closed)) + " %"
+				} else {
+					st.FatalPercent = "NA"
+					st.LivePercent = "NA"
+				}
 				update.StateWise = append(update.StateWise, st)
 			}
 		}
