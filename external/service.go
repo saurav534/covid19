@@ -17,9 +17,9 @@ var data *common.CoronaUpdate
 
 func LiveData() *common.CoronaUpdate {
 	millisNow := time.Now().UnixNano() / 1000000
-	diff := (millisNow - updateTime) / (1000)
+	diff := (millisNow - updateTime) / (60*1000)
 
-	if diff <= 1 && data != nil {
+	if diff <= 5 && data != nil {
 		log.Printf("Data from cache found %v", diff)
 		return data
 	}
