@@ -1,4 +1,4 @@
-<!--index.html-->
+<!--crowdsource.html-->
 
 <!doctype html>
 <html>
@@ -18,6 +18,15 @@
             display: block;
             height: 75px;
             margin: -75px 0 0;
+        }
+        #accordion .card-header {
+            padding: 2px 6px;
+        }
+        #accordion .card-header .btn{
+            font-size: 15px;
+        }
+        #accordion .card-header .btn-link{
+            text-decoration: none !important;
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -64,7 +73,7 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="left: auto; right: -10px">
             <a class="dropdown-item" href="#state-wise">State Wise Status</a>
             <a class="dropdown-item" href="#donate-pm-cares">Donate to PM-CARES</a>
-            <a class="dropdown-item" href="#imp-link">District Wise Cases</a>
+            <a class="dropdown-item" href="#district-wise">District Wise Cases</a>
         </div>
     </div>
 </nav>
@@ -72,8 +81,8 @@
 <br>
 <div class="col-12">
     <div class="btn-group w-100" role="group" aria-label="source switch">
-        <a type="button" href="/" class="btn btn-sm btn-primary active-source">Ministry of Health</a>
-        <a type="button" href="/crowdsourced" class="btn btn-sm btn-outline-primary" onclick="changeSource()">Crowd Sourced</a>
+        <a type="button" href="/" class="btn btn-sm btn-outline-primary" onclick="changeSource()">Ministry of Health</a>
+        <a type="button" href="/crowdsourced" class="btn btn-sm btn-primary active-source">Crowd Sourced</a>
     </div>
 </div>
 <br>
@@ -99,10 +108,6 @@
                         <tr class="table-danger">
                             <td>Death</td>
                             <td>{{.data.Death}}</td>
-                        </tr>
-                        <tr class="table-info">
-                            <td>Migrated COVID-19 Patient</td>
-                            <td>{{.data.Migrated}}</td>
                         </tr>
                     </table>
                 </div>
@@ -176,6 +181,46 @@
     </div>
 </div>
 <br>
+<div class="col-xs-12" id="district-wise">
+    <div class="col-12" style="font-size: 18px; font-weight: bold; margin-bottom: 10px">District Wise Status</div>
+    <div class="col-12 container">
+        <div id="accordion">
+            {{ with .data.StateDistrict }}
+                {{ range . }}
+                    <div class="card">
+                        <div class="card-header" id="card-{{.Id}}">
+                            <div class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#{{.Id}}"
+                                        aria-expanded="true" aria-controls="collapseOne">
+                                    {{.Name}}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="{{.Id}}" class="collapse" aria-labelledby="card-{{.Id}}"
+                             data-parent="#accordion">
+                            <div class="card-body col-12">
+                                <div class="row">
+                                    {{ with .Districts }}
+                                        {{ range . }}
+                                            <div class="col-6">
+                                                <div class="row">
+                                                    <div class="col-8 font-weight-bold" style="font-size: 13px">{{.Name}}</div>
+                                                    <div class="col-4 font-weight-light" style="font-size: 13px">{{.Confirmed}}</div>
+                                                </div>
+                                            </div>
+                                        {{ end }}
+                                    {{ end }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {{ end }}
+            {{ end }}
+        </div>
+    </div>
+</div>
+<br>
 <div class="col-xs-12" id="donate-pm-cares">
     <div class="col-12" style="font-size: 18px; font-weight: bold; margin-bottom: 10px">Donate - <a
                 href="https://pmindia.gov.in" class="font-weight-light">pmindia.gov.in</a></div>
@@ -213,13 +258,6 @@
 <br>
 <div class="col-xs-12" id="imp-link">
     <div class="col-12" style="font-size: 18px; font-weight: bold; margin-bottom: 10px">Important Links</div>
-    <div class="col-12">
-        <a href="{{.data.DistrictWise}}">
-            <span style="margin-right: 5px" class="float-left"><img
-                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="></span>
-            <span style="word-wrap: break-word;">District Wise Cases</span>
-        </a>
-    </div>
     <div class="col-12">
         <a href="{{.data.HelpLine}}">
             <span style="margin-right: 5px" class="float-left"><img

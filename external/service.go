@@ -2,25 +2,31 @@ package external
 
 import (
 	"covid19/common"
+	"encoding/json"
 	"fmt"
 	"github.com/cenkalti/backoff/v4"
 	"golang.org/x/net/html"
+	"io/ioutil"
 	"log"
+	"math"
 	"net/http"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
 )
 
 var updateTime int64
+var crowdUpdateTime int64
 var data *common.CoronaUpdate
+var crowdData *common.CoronaUpdate
 
 func LiveData() *common.CoronaUpdate {
 	millisNow := time.Now().UnixNano() / 1000000
-	diff := (millisNow - updateTime) / (60*1000)
+	diff := (millisNow - updateTime) / (60 * 1000)
 
 	if diff <= 5 && data != nil {
-		log.Printf("Data from cache found %v", diff)
+		log.Printf("MOH data from cache found %v", diff)
 		return data
 	}
 
@@ -34,6 +40,7 @@ func LiveData() *common.CoronaUpdate {
 
 	stateData := make([]*common.StateData, 0)
 	links := make([]string, 0)
+	linkMap := make(map[string]bool)
 
 	update := &common.CoronaUpdate{
 		StateWise: stateData,
@@ -46,7 +53,10 @@ func LiveData() *common.CoronaUpdate {
 
 	node, _ := html.Parse(resp.Body)
 	defer resp.Body.Close()
-	parseNode(node, update)
+	parseNode(node, update, linkMap)
+	for _, value := range reflect.ValueOf(linkMap).MapKeys() {
+		update.Links = append(update.Links, value.String())
+	}
 	cured := toInt(update.Cured)
 	death := toInt(update.Death)
 	closed := cured + death
@@ -69,10 +79,152 @@ func LiveData() *common.CoronaUpdate {
 	return update
 }
 
-func parseNode(node *html.Node, update *common.CoronaUpdate) {
-	if strings.Contains(node.Data, "foreign Nationals, as on") {
-		split := strings.Split(node.Data, "foreign Nationals, as on")
-		update.UpdateTime = strings.TrimSuffix(split[1], ")")
+func CrowdData() *common.CoronaUpdate {
+	millisNow := time.Now().UnixNano() / 1000000
+	diff := (millisNow - crowdUpdateTime) / (60 * 1000)
+
+	if diff <= 5 && crowdData != nil {
+		log.Printf("Crowd data from cache found %v", diff)
+		return crowdData
+	}
+
+	constantBackoff := backoff.NewConstantBackOff(500 * time.Millisecond)
+	var resp *http.Response
+	var err error
+	err = backoff.Retry(func() error {
+		resp, err = http.Get("https://api.covid19india.org/data.json")
+		return err
+	}, backoff.WithMaxRetries(constantBackoff, 4))
+
+	stateData := make([]*common.StateData, 0)
+	links := make([]string, 0)
+
+	update := &common.CoronaUpdate{
+		StateWise: stateData,
+		Links:     links,
+	}
+	if err != nil {
+		log.Printf("error while calling to crowd data service, %v", err)
+		return update
+	}
+
+	bytes, _ := ioutil.ReadAll(resp.Body)
+	cs := &common.CrowdSource{}
+	_ = json.Unmarshal(bytes, cs)
+
+	for _, data := range cs.Statewise {
+		if data.State == "Total" {
+			update.Total = data.Confirmed
+			update.Active = data.Active
+			update.Cured = data.Recovered
+			update.Death = data.Deaths
+			updateTime, _ := time.Parse("02/01/2006 15:04:05", data.Lastupdatedtime)
+			update.UpdateTime = updateTime.Format("02.01.2006 03:04 PM")
+			cured := toInt(data.Recovered)
+			death := toInt(data.Deaths)
+			closed := cured + death
+			update.Closed = strconv.Itoa(closed)
+			if closed != 0 {
+				update.FatalPercent = fmt.Sprintf("%.2f", (float32(death*100))/float32(closed))
+				update.LivePercent = fmt.Sprintf("%.2f", (float32((cured)*100))/float32(closed))
+			} else {
+				update.FatalPercent = "0"
+				update.LivePercent = "0"
+			}
+		} else if data.Confirmed != "0" {
+			st := &common.StateData{}
+			st.Death = data.Deaths
+			st.Total = data.Confirmed
+			st.LiveExit = data.Recovered
+			st.Name = data.State
+			cured := toInt(data.Recovered)
+			death := toInt(data.Deaths)
+			closed := cured + death
+			st.Closed = strconv.Itoa(closed)
+			if closed != 0 {
+				st.FatalPercent = fmt.Sprint(math.Round((float64(death*100))/float64(closed))) + " %"
+				st.LivePercent = fmt.Sprint(math.Round((float64((cured)*100))/float64(closed))) + " %"
+			} else {
+				st.FatalPercent = "0"
+				st.LivePercent = "0"
+			}
+			update.StateWise = append(update.StateWise, st)
+		}
+	}
+
+	if data != nil {
+		update.Facebook = data.Facebook
+		update.Youtube = data.Youtube
+		update.Twitter = data.Twitter
+		update.HelpLine = data.HelpLine
+		update.Faq = data.Faq
+		update.Links = data.Links
+	}
+
+	stataDistrictData := crowdDistrictData()
+	covidState := make([]*common.CovidState, 0)
+
+	for _, value := range reflect.ValueOf(stataDistrictData).MapKeys() {
+		if value.String() == "Unkown" {
+			continue
+		}
+		stateDistricts := stataDistrictData[value.String()]
+		districts := stateDistricts.DistrictData
+		covidDistrict := make([]*common.CovidDistrict, 0)
+		for _, val := range reflect.ValueOf(districts).MapKeys() {
+			districtData := districts[val.String()]
+			covidDistrict = append(covidDistrict, &common.CovidDistrict{
+				Name:            val.String(),
+				Confirmed:       districtData.Confirmed,
+				Lastupdatedtime: districtData.Lastupdatedtime,
+				Delta:           districtData.Delta,
+			})
+		}
+		covidState = append(covidState, &common.CovidState{
+			Name:      value.String(),
+			Id:        strings.ReplaceAll(value.String(), " ", "-"),
+			Districts: covidDistrict,
+		})
+	}
+	update.StateDistrict = covidState
+
+	// updating cache time
+	crowdUpdateTime = millisNow
+	crowdData = update
+
+	return update
+}
+
+func crowdDistrictData() map[string]*common.StateDistrict {
+	constantBackoff := backoff.NewConstantBackOff(500 * time.Millisecond)
+	var resp *http.Response
+	var err error
+	err = backoff.Retry(func() error {
+		resp, err = http.Get("https://api.covid19india.org/state_district_wise.json")
+		return err
+	}, backoff.WithMaxRetries(constantBackoff, 4))
+
+	if err != nil {
+		log.Printf("error while calling to crowd district data service, %v", err)
+		return nil
+	}
+
+	bytes, _ := ioutil.ReadAll(resp.Body)
+	dd := make(map[string]*common.StateDistrict)
+	err = json.Unmarshal(bytes, &dd)
+	if err != nil {
+		log.Printf("error happend %v", err)
+	}
+	return dd
+}
+
+func parseNode(node *html.Node, update *common.CoronaUpdate, linkMap map[string]bool) {
+	if strings.Contains(node.Data, "as on :") {
+		split := strings.Split(node.Data, " GMT")
+		updateTime := strings.TrimPrefix(split[0], "as on : ")
+
+		ut, _ := time.Parse("02 January 2006, 15:04", updateTime)
+		update.UpdateTime = ut.Format("02.01.2006 03:04 PM")
 		return
 	}
 
@@ -92,14 +244,26 @@ func parseNode(node *html.Node, update *common.CoronaUpdate) {
 			} else if strings.Contains(url, "helpline") {
 				update.HelpLine = url
 			} else {
-				update.Links = append(update.Links, url)
+				linkMap[url] = true
 			}
 		}
 		return
 	}
 
-	if rowHasClass(node, "div", "iblock_text") {
-		setValues(node, update)
+	if rowHasClass(node, "li", "bg-blue") {
+		setStatValues(node, &update.Active)
+		return
+	}
+	if rowHasClass(node, "li", "bg-green") {
+		setStatValues(node, &update.Cured)
+		return
+	}
+	if rowHasClass(node, "li", "bg-red") {
+		setStatValues(node, &update.Death)
+		return
+	}
+	if rowHasClass(node, "li", "bg-orange") {
+		setStatValues(node, &update.Migrated)
 		return
 	}
 
@@ -116,7 +280,7 @@ func parseNode(node *html.Node, update *common.CoronaUpdate) {
 	}
 
 	for child := node.FirstChild; child != nil; child = child.NextSibling {
-		parseNode(child, update)
+		parseNode(child, update, linkMap)
 	}
 
 }
@@ -153,8 +317,8 @@ func setStateWise(tbody *html.Node, update *common.CoronaUpdate) {
 				closed := live + death
 				st.Closed = strconv.Itoa(closed)
 				if closed != 0 {
-					st.FatalPercent = fmt.Sprintf("%.2f", (float32(death*100))/float32(closed)) + " %"
-					st.LivePercent = fmt.Sprintf("%.2f", (float32((live)*100))/float32(closed)) + " %"
+					st.FatalPercent = fmt.Sprint(math.Round((float64(death*100))/float64(closed))) + " %"
+					st.LivePercent = fmt.Sprint(math.Round((float64((live)*100))/float64(closed))) + " %"
 				} else {
 					st.FatalPercent = "NA"
 					st.LivePercent = "NA"
@@ -205,6 +369,14 @@ func setValues(node *html.Node, update *common.CoronaUpdate) {
 	}
 	if strings.Index(key, "Migrated") >= 0 {
 		update.Migrated = value
+	}
+}
+
+func setStatValues(node *html.Node, val *string) {
+	for infoChild := node.FirstChild; infoChild != nil; infoChild = infoChild.NextSibling {
+		if isElementNode(infoChild, "strong") {
+			*val = infoChild.FirstChild.Data
+		}
 	}
 }
 
