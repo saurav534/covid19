@@ -121,8 +121,8 @@
                         <tr class="table-warning">
                             <td>Total Cases</td>
                             <td>{{.data.Total}}
-                                {{if .data.Delta.Confirmed}}
-                                    <span style="color: red; font-size: 11px"> [+{{.data.Delta.Confirmed}}]</span>
+                                {{if .data.Delta.Confirmeddelta}}
+                                    <span style="color: darkred; font-size: 11px"> [+{{.data.Delta.Confirmeddelta}}]</span>
                                 {{ end }}
                             </td>
                         </tr>
@@ -133,16 +133,16 @@
                         <tr class="table-success">
                             <td>Cured/discharged cases</td>
                             <td>{{.data.Cured}}
-                                {{if .data.Delta.Recovered}}
-                                    <span style="color: Green; font-size: 11px"> [+{{.data.Delta.Recovered}}]</span>
+                                {{if .data.Delta.Recovereddelta}}
+                                    <span style="color: darkgreen; font-size: 11px"> [+{{.data.Delta.Recovereddelta}}]</span>
                                 {{ end }}
                             </td>
                         </tr>
                         <tr class="table-danger">
                             <td>Death</td>
                             <td>{{.data.Death}}
-                                {{if .data.Delta.Deaths}}
-                                    <span style="color: red; font-size: 11px"> [+{{.data.Delta.Deaths}}]</span>
+                                {{if .data.Delta.Deceaseddelta}}
+                                    <span style="color: #484848; font-size: 11px"> [+{{.data.Delta.Deceaseddelta}}]</span>
                                 {{ end }}
                             </td>
                         </tr>
@@ -153,7 +153,7 @@
                 <input id="closed-cases" value="{{.data.Closed}}" style="display: none">
             </div>
             <div class="col-12 col-sm-6 col-md-5 col-lg-4">
-                <canvas id="myChart" width="400" height="300"></canvas>
+                <canvas id="myChart" width="400" height="250"></canvas>
             </div>
         </div>
     </div>
@@ -163,7 +163,7 @@
     <div class="row">
         <div class="col-6" style="font-size: 18px; padding-top: 5px">State wise Status
         </div>
-        <div class="col-6">
+        <div class="col-6 input-group input-group-sm">
             <input id="state-filter" class="form-control" placeholder="State Name" onkeyup="filterState()">
         </div>
     </div>

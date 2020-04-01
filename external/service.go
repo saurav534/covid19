@@ -112,15 +112,15 @@ func CrowdData() *common.CoronaUpdate {
 	cs := &common.CrowdSource{}
 	_ = json.Unmarshal(bytes, cs)
 
+	update.Delta = cs.KeyValues[0]
 	for _, data := range cs.Statewise {
 		if data.State == "Total" {
 			update.Total = data.Confirmed
 			update.Active = data.Active
 			update.Cured = data.Recovered
 			update.Death = data.Deaths
-			update.Delta = data.Delta
 			updateTime, _ := time.Parse("02/01/2006 15:04:05", data.Lastupdatedtime)
-			update.UpdateTime = updateTime.Format("02.01.2006 03:04 PM")
+			update.UpdateTime = updateTime.Format("02 Jan, 03:04 PM")
 			cured := toInt(data.Recovered)
 			death := toInt(data.Deaths)
 			closed := cured + death
@@ -224,7 +224,7 @@ func parseNode(node *html.Node, update *common.CoronaUpdate, linkMap map[string]
 		updateTime := strings.TrimPrefix(split[0], "as on : ")
 
 		ut, _ := time.Parse("02 January 2006, 15:04", updateTime)
-		update.UpdateTime = ut.Format("02.01.2006 03:04 PM")
+		update.UpdateTime = ut.Format("02 Jan, 03:04 PM")
 		return
 	}
 
