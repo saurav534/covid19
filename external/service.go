@@ -11,6 +11,7 @@ import (
 	"math"
 	"net/http"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -88,11 +89,17 @@ func CrowdData() *common.CoronaUpdate {
 		return crowdData
 	}
 
+	dataChannel := make(chan map[string]*common.StateDistrict)
+	go func() {
+		crowdDistrictData(dataChannel)
+	}()
+
 	constantBackoff := backoff.NewConstantBackOff(500 * time.Millisecond)
 	var resp *http.Response
 	var err error
 	err = backoff.Retry(func() error {
 		resp, err = http.Get("https://api.covid19india.org/data.json")
+		log.Printf("Complete data response recieved")
 		return err
 	}, backoff.WithMaxRetries(constantBackoff, 4))
 
@@ -111,6 +118,32 @@ func CrowdData() *common.CoronaUpdate {
 	bytes, _ := ioutil.ReadAll(resp.Body)
 	cs := &common.CrowdSource{}
 	_ = json.Unmarshal(bytes, cs)
+
+	// parse district data first
+	stataDistrictData := <-dataChannel
+	stateToDistrictList := make(map[string][]*common.CovidDistrict)
+
+	for _, value := range reflect.ValueOf(stataDistrictData).MapKeys() {
+		if value.String() == "Unkown" {
+			continue
+		}
+		stateDistricts := stataDistrictData[value.String()]
+		districts := stateDistricts.DistrictData
+		covidDistrict := make([]*common.CovidDistrict, 0)
+		for _, val := range reflect.ValueOf(districts).MapKeys() {
+			districtData := districts[val.String()]
+			covidDistrict = append(covidDistrict, &common.CovidDistrict{
+				Name:            val.String(),
+				Confirmed:       districtData.Confirmed,
+				Lastupdatedtime: districtData.Lastupdatedtime,
+				Delta:           districtData.Delta,
+			})
+		}
+		sort.Slice(covidDistrict, func(i, j int) bool {
+			return covidDistrict[i].Confirmed > covidDistrict[j].Confirmed
+		})
+		stateToDistrictList[value.String()] = covidDistrict
+	}
 
 	update.Delta = cs.KeyValues[0]
 	for _, data := range cs.Statewise {
@@ -136,8 +169,11 @@ func CrowdData() *common.CoronaUpdate {
 			st := &common.StateData{}
 			st.Death = data.Deaths
 			st.Total = data.Confirmed
+			st.Active = data.Active
 			st.LiveExit = data.Recovered
 			st.Name = data.State
+			st.Id = strings.ReplaceAll(st.Name, " ", "-")
+			st.District = stateToDistrictList[st.Name]
 			cured := toInt(data.Recovered)
 			death := toInt(data.Deaths)
 			closed := cured + death
@@ -146,8 +182,8 @@ func CrowdData() *common.CoronaUpdate {
 				st.FatalPercent = fmt.Sprint(math.Round((float64(death*100))/float64(closed))) + "%"
 				st.LivePercent = fmt.Sprint(math.Round((float64((cured)*100))/float64(closed))) + "%"
 			} else {
-				st.FatalPercent = "0"
-				st.LivePercent = "0"
+				st.FatalPercent = "NA"
+				st.LivePercent = "NA"
 			}
 			update.StateWise = append(update.StateWise, st)
 		}
@@ -161,32 +197,6 @@ func CrowdData() *common.CoronaUpdate {
 		update.Faq = data.Faq
 		update.Links = data.Links
 	}
-	stataDistrictData := crowdDistrictData()
-	covidState := make([]*common.CovidState, 0)
-
-	for _, value := range reflect.ValueOf(stataDistrictData).MapKeys() {
-		if value.String() == "Unkown" {
-			continue
-		}
-		stateDistricts := stataDistrictData[value.String()]
-		districts := stateDistricts.DistrictData
-		covidDistrict := make([]*common.CovidDistrict, 0)
-		for _, val := range reflect.ValueOf(districts).MapKeys() {
-			districtData := districts[val.String()]
-			covidDistrict = append(covidDistrict, &common.CovidDistrict{
-				Name:            val.String(),
-				Confirmed:       districtData.Confirmed,
-				Lastupdatedtime: districtData.Lastupdatedtime,
-				Delta:           districtData.Delta,
-			})
-		}
-		covidState = append(covidState, &common.CovidState{
-			Name:      value.String(),
-			Id:        strings.ReplaceAll(value.String(), " ", "-"),
-			Districts: covidDistrict,
-		})
-	}
-	update.StateDistrict = covidState
 
 	// updating cache time
 	crowdUpdateTime = millisNow
@@ -195,18 +205,19 @@ func CrowdData() *common.CoronaUpdate {
 	return update
 }
 
-func crowdDistrictData() map[string]*common.StateDistrict {
+func crowdDistrictData(dataChannel chan<- map[string]*common.StateDistrict) {
 	constantBackoff := backoff.NewConstantBackOff(500 * time.Millisecond)
 	var resp *http.Response
 	var err error
 	err = backoff.Retry(func() error {
 		resp, err = http.Get("https://api.covid19india.org/state_district_wise.json")
+		log.Printf("District Wise response recieved")
 		return err
 	}, backoff.WithMaxRetries(constantBackoff, 4))
 
 	if err != nil {
 		log.Printf("error while calling to crowd district data service, %v", err)
-		return nil
+		dataChannel <- nil
 	}
 
 	bytes, _ := ioutil.ReadAll(resp.Body)
@@ -215,7 +226,7 @@ func crowdDistrictData() map[string]*common.StateDistrict {
 	if err != nil {
 		log.Printf("error happend %v", err)
 	}
-	return dd
+	dataChannel <- dd
 }
 
 func parseNode(node *html.Node, update *common.CoronaUpdate, linkMap map[string]bool) {
@@ -315,6 +326,7 @@ func setStateWise(tbody *html.Node, update *common.CoronaUpdate) {
 				live := toInt(st.LiveExit)
 				death := toInt(st.Death)
 				closed := live + death
+				st.Active = strconv.Itoa(toInt(st.Total) - closed)
 				st.Closed = strconv.Itoa(closed)
 				if closed != 0 {
 					st.FatalPercent = fmt.Sprint(math.Round((float64(death*100))/float64(closed))) + "%"

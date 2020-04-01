@@ -57,12 +57,6 @@ type PerDistrict struct {
 	Delta           Delta  `json:"delta"`
 }
 
-type CovidState struct {
-	Name      string
-	Id        string
-	Districts []*CovidDistrict
-}
-
 type CovidDistrict struct {
 	Name            string
 	Confirmed       int32  `json:"confirmed"`

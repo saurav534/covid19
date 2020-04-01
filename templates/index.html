@@ -28,7 +28,7 @@
             padding: .55rem 0.8rem;
         }
         .card-body {
-            padding: 0.8rem;
+            padding: 0.3rem 0.8rem;
         }
         .card-footer {
             font-size: 12px;
@@ -148,21 +148,21 @@
         {{ with .data.StateWise }}
             {{ range . }}
                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                    <div class="state-card card bg-light border-dark mb-3 font-weight-light" state="{{.Name}}"
+                    <div class="state-card card text-white bg-secondary mb-3 font-weight-light" state="{{.Name}}"
                          style="max-width: 24rem;">
                         <div class="card-header font-weight-normal">
                             <span>{{.Name}}</span>
                             <span class="badge badge-danger float-right font-weight-light" style="margin-top: 2px">{{.Total}}</span>
                         </div>
-                        <div class="card-body text-dark">
+                        <div class="card-body">
                             <div class="col-xs-12">
                                 <table width="100%">
-                                    <tr>
-                                        <td class="font-weight-normal">Total Cases</td>
-                                        <td class="font-weight-normal float-right">{{.Total}}</td>
+                                    <tr style="font-size: 14px">
+                                        <td class="font-weight-normal">Active Cases</td>
+                                        <td class="font-weight-normal float-right">{{.Active}}</td>
                                     </tr>
                                     <tr style="font-size: 14px">
-                                        <td>Cured/Discharged/Migrated</td>
+                                        <td>Cured/Discharged</td>
                                         <td class="float-right">{{.LiveExit}}</td>
                                     </tr>
                                     <tr style="font-size: 14px">
@@ -172,7 +172,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="card-footer text-muted">
+                        <div class="card-footer">
                             <div class="row">
                                 <div class="col-4" style="padding-right: 0">Closed: {{.Closed}}</div>
                                 <div class="col-4" style="padding-right: 0">Cured: {{.LivePercent}}</div>
