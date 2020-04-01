@@ -19,13 +19,35 @@
             height: 75px;
             margin: -75px 0 0;
         }
+
+        .table-sm td, .table-sm th {
+            font-size: 14px;
+            padding: .5rem
+        }
+
+        .card-header {
+            font-size: 16px;
+            padding: .55rem 0.8rem;
+        }
+
+        .card-body {
+            padding: 0.8rem;
+        }
+
+        .card-footer {
+            font-size: 12px;
+            padding: .55rem 0.8rem;
+        }
+
         #accordion .card-header {
             padding: 2px 6px;
         }
-        #accordion .card-header .btn{
+
+        #accordion .card-header .btn {
             font-size: 15px;
         }
-        #accordion .card-header .btn-link{
+
+        #accordion .card-header .btn-link {
             text-decoration: none !important;
         }
     </style>
@@ -52,8 +74,9 @@
         }
 
         function changeSource() {
-            $(".active-source").addClass("btn-outline-primary")
-            $(".active-source").removeClass("btn-primary")
+            $(".active-source").addClass("btn-outline-primary");
+            $(".active-source").removeClass("btn-primary");
+            window.location = "/";
         }
     </script>
     <script data-ad-client="ca-pub-8842415115243274" async
@@ -63,7 +86,7 @@
 <body>
 <nav class="navbar fixed-top navbar-light bg-light" style="width: 100%;box-shadow: 0px 1px 7px 0px grey;">
     <a class="navbar-brand" href="/">
-        <span class="badge badge-info" style="font-size: 18px;">COVID-19</span>
+        <span class="badge badge-dark" style="font-size: 18px;">COVID-19</span>
         <span class="col-6" style="font-size: 14px">{{.data.UpdateTime}}</span>
     </a>
     <div class="nav-item dropdown">
@@ -81,21 +104,27 @@
 <br>
 <div class="col-12">
     <div class="btn-group w-100" role="group" aria-label="source switch">
-        <a type="button" href="/" class="btn btn-sm btn-outline-primary" onclick="changeSource()">Ministry of Health</a>
-        <a type="button" href="/crowdsourced" class="btn btn-sm btn-primary active-source">Crowd Sourced</a>
+        <button type="button" class="btn btn-sm btn-outline-primary" onclick="changeSource()">Ministry of
+            Health
+        </button>
+        <button type="button" class="btn btn-sm btn-primary active-source">Crowd Sourced</button>
     </div>
 </div>
 <br>
 <div class="col-xs-12">
-    <div class="col-12" style="font-size: 18px; font-weight: bold; margin-bottom: 10px">Pan India Status</div>
+    <div class="col-12" style="font-size: 18px; margin-bottom: 10px">Pan India Status</div>
     <div class="col-12 container">
         <div class="row">
             <div class="col-12 col-sm-6 col-md-7 col-lg-8">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover table-sm font-weight-light">
                         <tr class="table-warning">
                             <td>Total Cases</td>
-                            <td>{{.data.Total}}</td>
+                            <td>{{.data.Total}}
+                                {{if .data.Delta.Confirmed}}
+                                    <span style="color: red; font-size: 11px"> [+{{.data.Delta.Confirmed}}]</span>
+                                {{ end }}
+                            </td>
                         </tr>
                         <tr class="table-active">
                             <td>Active COVID 2019 cases</td>
@@ -103,11 +132,19 @@
                         </tr>
                         <tr class="table-success">
                             <td>Cured/discharged cases</td>
-                            <td>{{.data.Cured}}</td>
+                            <td>{{.data.Cured}}
+                                {{if .data.Delta.Recovered}}
+                                    <span style="color: Green; font-size: 11px"> [+{{.data.Delta.Recovered}}]</span>
+                                {{ end }}
+                            </td>
                         </tr>
                         <tr class="table-danger">
                             <td>Death</td>
-                            <td>{{.data.Death}}</td>
+                            <td>{{.data.Death}}
+                                {{if .data.Delta.Deaths}}
+                                    <span style="color: red; font-size: 11px"> [+{{.data.Delta.Deaths}}]</span>
+                                {{ end }}
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -116,7 +153,7 @@
                 <input id="closed-cases" value="{{.data.Closed}}" style="display: none">
             </div>
             <div class="col-12 col-sm-6 col-md-5 col-lg-4">
-                <canvas id="myChart" width="400" height="350"></canvas>
+                <canvas id="myChart" width="400" height="300"></canvas>
             </div>
         </div>
     </div>
@@ -124,7 +161,7 @@
 <br>
 <div class="col-12" id="state-wise">
     <div class="row">
-        <div class="col-6" style="font-size: 18px; font-weight: bold; padding-top: 5px">State wise Status
+        <div class="col-6" style="font-size: 18px; padding-top: 5px">State wise Status
         </div>
         <div class="col-6">
             <input id="state-filter" class="form-control" placeholder="State Name" onkeyup="filterState()">
@@ -137,24 +174,25 @@
         {{ with .data.StateWise }}
             {{ range . }}
                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                    <div class="state-card card bg-light border-dark mb-3" state="{{.Name}}"
+                    <div class="state-card card bg-light border-dark mb-3 font-weight-light" state="{{.Name}}"
                          style="max-width: 24rem;">
-                        <div class="card-header" style="font-weight: bold; font-size: 17px">
+                        <div class="card-header font-weight-normal">
                             <span>{{.Name}}</span>
-                            <span class="badge badge-danger float-right">{{.Total}}</span>
+                            <span class="badge badge-danger float-right font-weight-light"
+                                  style="margin-top: 2px">{{.Total}}</span>
                         </div>
-                        <div class="card-body text-dark" style="padding: 1.05rem">
+                        <div class="card-body text-dark">
                             <div class="col-xs-12">
                                 <table width="100%">
                                     <tr>
-                                        <td style="font-weight: bold">Total Cases</td>
-                                        <td style="font-weight: bold" class="float-right">{{.Total}}</td>
+                                        <td class="font-weight-normal">Total Cases</td>
+                                        <td class="font-weight-normal float-right">{{.Total}}</td>
                                     </tr>
-                                    <tr>
+                                    <tr style="font-size: 14px">
                                         <td>Cured/Discharged/Migrated</td>
                                         <td class="float-right">{{.LiveExit}}</td>
                                     </tr>
-                                    <tr>
+                                    <tr style="font-size: 14px">
                                         <td>Death</td>
                                         <td class="float-right">{{.Death}}</td>
                                     </tr>
@@ -162,16 +200,10 @@
                             </div>
                         </div>
                         <div class="card-footer text-muted">
-                            <div class="row" style="font-size: 12px;">
-                                <div class="col-4">
-                                    Closed: {{.Closed}}
-                                </div>
-                                <div class="col-4">
-                                    Cured: {{.LivePercent}}
-                                </div>
-                                <div class="col-4">
-                                    Fatal: {{.FatalPercent}}
-                                </div>
+                            <div class="row">
+                                <div class="col-4" style="padding-right: 0">Closed: {{.Closed}}</div>
+                                <div class="col-4" style="padding-right: 0">Cured: {{.LivePercent}}</div>
+                                <div class="col-4" style="padding-right: 0">Fatal: {{.FatalPercent}}</div>
                             </div>
                         </div>
                     </div>
@@ -205,8 +237,10 @@
                                         {{ range . }}
                                             <div class="col-6">
                                                 <div class="row">
-                                                    <div class="col-8 font-weight-bold" style="font-size: 13px">{{.Name}}</div>
-                                                    <div class="col-4 font-weight-light" style="font-size: 13px">{{.Confirmed}}</div>
+                                                    <div class="col-8 font-weight-bold"
+                                                         style="font-size: 13px">{{.Name}}</div>
+                                                    <div class="col-4 font-weight-light"
+                                                         style="font-size: 13px">{{.Confirmed}}</div>
                                                 </div>
                                             </div>
                                         {{ end }}
@@ -349,37 +383,51 @@
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'horizontalBar',
         data: {
             labels: ['Fatal', 'Cured'],
             datasets: [{
                 label: '%',
-                data: [$("#fatal-percent").val(), $("#live-percent").val()],
+                data: [$("#live-percent").val(), $("#fatal-percent").val()],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
                     'rgba(3, 183, 44, 0.2)',
+                    'rgba(255, 99, 132, 0.2)'
                 ],
                 borderColor: [
-                    'rgba(255, 99, 132, 1)',
                     'rgba(3, 183, 44, 1)',
+                    'rgba(255, 99, 132, 1)'
                 ],
                 borderWidth: 1,
-                barThickness: 70
+                barThickness: 30
             }]
         },
         options: {
             scales: {
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 10
+                    }
+                }],
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
-                    },
-                    labelString: "hey"
+                        beginAtZero: true,
+                        maxRotation: 90,
+                        minRotation: 90
+                    }
                 }]
+            },
+            layout: {
+                padding: {
+                    left: -30
+                }
             },
             title: {
                 display: true,
                 text: 'Closed Cases - ' + $("#closed-cases").val(),
-                fontSize: 14
+                fontSize: 14,
+                fontColor: 'black',
+                fontStyle:  "normal"
             }
         }
     });

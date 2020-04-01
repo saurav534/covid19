@@ -24,10 +24,10 @@ type KeyValues struct {
 	Statesdelta              string `json:"statesdelta"`
 }
 type Delta struct {
-	Active    int `json:"active"`
-	Confirmed int `json:"confirmed"`
-	Deaths    int `json:"deaths"`
-	Recovered int `json:"recovered"`
+	Active    int32 `json:"active"`
+	Confirmed int32 `json:"confirmed"`
+	Deaths    int32 `json:"deaths"`
+	Recovered int32 `json:"recovered"`
 }
 type Statewise struct {
 	Active          string `json:"active"`

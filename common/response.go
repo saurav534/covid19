@@ -6,6 +6,7 @@ type CoronaUpdate struct {
 	Active            string        `json:"active"`
 	Cured             string        `json:"cured"`
 	Death             string        `json:"death"`
+	Delta             Delta         `json:"delta"`
 	Closed            string        `json:"closed_case"`
 	FatalPercent      string        `json:"fatal_percent"`
 	LivePercent       string        `json:"live_percent"`

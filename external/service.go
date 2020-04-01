@@ -118,6 +118,7 @@ func CrowdData() *common.CoronaUpdate {
 			update.Active = data.Active
 			update.Cured = data.Recovered
 			update.Death = data.Deaths
+			update.Delta = data.Delta
 			updateTime, _ := time.Parse("02/01/2006 15:04:05", data.Lastupdatedtime)
 			update.UpdateTime = updateTime.Format("02.01.2006 03:04 PM")
 			cured := toInt(data.Recovered)
@@ -142,8 +143,8 @@ func CrowdData() *common.CoronaUpdate {
 			closed := cured + death
 			st.Closed = strconv.Itoa(closed)
 			if closed != 0 {
-				st.FatalPercent = fmt.Sprint(math.Round((float64(death*100))/float64(closed))) + " %"
-				st.LivePercent = fmt.Sprint(math.Round((float64((cured)*100))/float64(closed))) + " %"
+				st.FatalPercent = fmt.Sprint(math.Round((float64(death*100))/float64(closed))) + "%"
+				st.LivePercent = fmt.Sprint(math.Round((float64((cured)*100))/float64(closed))) + "%"
 			} else {
 				st.FatalPercent = "0"
 				st.LivePercent = "0"
@@ -160,7 +161,6 @@ func CrowdData() *common.CoronaUpdate {
 		update.Faq = data.Faq
 		update.Links = data.Links
 	}
-
 	stataDistrictData := crowdDistrictData()
 	covidState := make([]*common.CovidState, 0)
 
@@ -317,8 +317,8 @@ func setStateWise(tbody *html.Node, update *common.CoronaUpdate) {
 				closed := live + death
 				st.Closed = strconv.Itoa(closed)
 				if closed != 0 {
-					st.FatalPercent = fmt.Sprint(math.Round((float64(death*100))/float64(closed))) + " %"
-					st.LivePercent = fmt.Sprint(math.Round((float64((live)*100))/float64(closed))) + " %"
+					st.FatalPercent = fmt.Sprint(math.Round((float64(death*100))/float64(closed))) + "%"
+					st.LivePercent = fmt.Sprint(math.Round((float64((live)*100))/float64(closed))) + "%"
 				} else {
 					st.FatalPercent = "NA"
 					st.LivePercent = "NA"
