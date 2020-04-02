@@ -43,7 +43,7 @@ func GetInfectColor(cnf int32) string{
 	if cnf >= 300 {
 		return "#174ea6"
 	}
-	if cnf >= 270 {
+	if cnf >= 275 {
 		return "#1c52a9"
 	}
 	if cnf >= 250 {

@@ -64,6 +64,12 @@
         #india-map-license-text {
             top: -15px !important;
         }
+
+        .zc-html-mode td {
+            font-size: 11px;
+            padding: 4px;
+            font-weight: 300;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
             integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -192,8 +198,8 @@
                          style="max-width: 24rem;">
                         <div class="card-header font-weight-normal">
                             <span>{{.Name}}</span>
-                            <span class="badge badge-danger float-right font-weight-light"
-                                  style="margin-top: 2px">{{.Total}}</span>
+                            <span class="badge float-right font-weight-light"
+                                  style="margin-top: 2px; background-color: #e23028">{{.Total}}</span>
                         </div>
                         <div class="card-body">
                             <div class="col-xs-12">
@@ -226,11 +232,11 @@
                                                     <div class="col-6">
                                                         <div class="row">
                                                             <div class="col-8 font-weight-bold"
-                                                                 style="font-size: 13px; padding-right: 0">{{.Name}}</div>
+                                                                 style="font-size: 11px; padding-right: 0; padding-left: 13px">{{.Name}}</div>
                                                             <div class="col-4 font-weight-light"
-                                                                 style="font-size: 13px; padding-right: 0">{{.Confirmed}}
+                                                                 style="font-size: 11px; padding-right: 5px; padding-left: 3px">{{.Confirmed}}
                                                                 {{if .Delta.Confirmed}}
-                                                                    <span style="color: darkred; font-size: 11px"> [+{{.Delta.Confirmed}}]</span>
+                                                                    <span style="color: #e23028; font-size: 10px"> [+{{.Delta.Confirmed}}]</span>
                                                                 {{ end }}
                                                             </div>
                                                         </div>
@@ -380,6 +386,7 @@
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -438,29 +445,6 @@
                 {
                     type: 'zingchart.maps',
                     options: {
-                        bbox: [67.177, 36.494, 98.403, 6.965], // get bbox from zingchart.maps.getItemInfo('world-countries','ind');
-                        ignore: ['IND'], // ignore India because we are rendering a more specific India map below
-                        name: 'world.countries',
-                        panning: false, // turn of zooming. Doesn't work with bounding box
-                        style: {
-                            tooltip: {
-                                borderColor: '#000',
-                                borderWidth: '2px',
-                                fontSize: '18px'
-                            },
-                            controls: {
-                                visible: false // turn of zooming. Doesn't work with bounding box
-                            },
-                            hoverState: {
-                                alpha: .28
-                            }
-                        },
-                        zooming: false // turn of zooming. Doesn't work with bounding box
-                    }
-                },
-                {
-                    type: 'zingchart.maps',
-                    options: {
                         name: 'ind',
                         panning: false, // turn of zooming. Doesn't work with bounding box
                         zooming: false,
@@ -485,10 +469,13 @@
                                 {{ range . }}
                                 "{{ .Code }}": {
                                     tooltip: {
-                                        text: {{.Display}},
-                                        backgroundColor: 'white'
+                                        text: "<table style=\"width: 110px\" class=\"table table-sm\"><tr><td colspan=\"2\" style=\"text-align: center; font-weight: bold\">{{.Name}}</td></tr><tr class=\"table-warning\"><td>Total</td><td>{{.Total}}</td></tr><tr class=\"table-active\"><td>Active</td><td>{{.Active}}</td></tr><tr class=\"table-success\"><td>Cured</td><td>{{.LiveExit}}</td></tr><tr class=\"table-danger\"><td>Death</td><td>{{.Death}}</td></tr></table>",
+                                        'html-mode': true,
+                                        backgroundColor: 'white',
+                                        borderWidth: '0px',
+                                        padding: '2px'
                                     },
-                                    backgroundColor: {{.Color}},
+                                    backgroundColor: {{.Color}}
                                 },
                                 {{ end }}
                                 {{ end }}
@@ -496,58 +483,139 @@
                             label: { // text displaying. Like valueBox
                                 fontSize: '12px',
                                 visible: false
-                            },
-                            series: [
-                                {
-                                    values: [138.6, 196.3, 153.6, 127.4, 114.1, 181.4, 131.5, 170.9],
-                                    text: "Test 1"
-                                },
-                                {
-                                    values: [84.8, 65.8, 122.4, 96.6, 279.1, 56.4, 275.9, 237.8],
-                                    text: "Test 2"
-                                },
-                                {
-                                    values: [108.7, 132.9, 61.6, 192.1, 134.5, 349.4, 183.9, 224.4],
-                                    text: "Test 3"
-                                },
-                                {
-                                    values: [213.2, 65.6, 139.5, 194.6, 184.4, 79.2, 73.1, 33.7],
-                                    text: "Test 4"
-                                },
-                                {
-                                    values: [236.6, 260.8, 155.2, 58.7, 119.1, 192.4, 164.8, 51.4],
-                                    text: "Test 5"
-                                }
-                            ]
-                        },
-                        zooming: false, // turn of zooming. Doesn't work with bounding box,
-                        series: [
-                            {
-                                values: [138.6, 196.3, 153.6, 127.4, 114.1, 181.4, 131.5, 170.9],
-                                text: "Test 1"
-                            },
-                            {
-                                values: [84.8, 65.8, 122.4, 96.6, 279.1, 56.4, 275.9, 237.8],
-                                text: "Test 2"
-                            },
-                            {
-                                values: [108.7, 132.9, 61.6, 192.1, 134.5, 349.4, 183.9, 224.4],
-                                text: "Test 3"
-                            },
-                            {
-                                values: [213.2, 65.6, 139.5, 194.6, 184.4, 79.2, 73.1, 33.7],
-                                text: "Test 4"
-                            },
-                            {
-                                values: [236.6, 260.8, 155.2, 58.7, 119.1, 192.4, 164.8, 51.4],
-                                text: "Test 5"
                             }
-                        ]
+                        },
+                        zooming: true // turn of zooming. Doesn't work with bounding box,
                     }
+                },
+                {
+                    type: 'rectangle',
+                    height: '10px',
+                    width: '30px',
+                    id: '1',
+                    backgroundColor: '#174ea6',
+                    cursor: 'pointer',
+                    label: {
+                        text: '300+',
+                        fontColor: '#000',
+                        fontSize: '9px',
+                        offsetX: '-30px',
+                        offsetY: '1px'
+                    },
+                    size: '10px',
+                    x: '90%',
+                    y: '5%'
+                },
+                {
+                    type: 'rectangle',
+                    height: '10px',
+                    width: '30px',
+                    id: '2',
+                    backgroundColor: '#2558a9',
+                    cursor: 'pointer',
+                    label: {
+                        text: '250-299',
+                        fontColor: '#000',
+                        fontSize: '9px',
+                        offsetX: '-40px',
+                        offsetY: '1px'
+                    },
+                    size: '10px',
+                    x: '90%',
+                    y: '8%'
+                },
+                {
+                    type: 'rectangle',
+                    height: '10px',
+                    width: '30px',
+                    id: '3',
+                    backgroundColor: '#406cb1',
+                    cursor: 'pointer',
+                    label: {
+                        text: '200-249',
+                        fontColor: '#000',
+                        fontSize: '9px',
+                        offsetX: '-40px',
+                        offsetY: '1px'
+                    },
+                    size: '10px',
+                    x: '90%',
+                    y: '11%'
+                },
+                {
+                    type: 'rectangle',
+                    height: '10px',
+                    width: '30px',
+                    id: '4',
+                    backgroundColor: '#5c7bad',
+                    cursor: 'pointer',
+                    label: {
+                        text: '150-199',
+                        fontColor: '#000',
+                        fontSize: '9px',
+                        offsetX: '-40px',
+                        offsetY: '1px'
+                    },
+                    size: '10px',
+                    x: '90%',
+                    y: '14%'
+                },
+                {
+                    type: 'rectangle',
+                    height: '10px',
+                    width: '30px',
+                    id: '5',
+                    backgroundColor: '#8ba2c7',
+                    cursor: 'pointer',
+                    label: {
+                        text: '100-149',
+                        fontColor: '#000',
+                        fontSize: '9px',
+                        offsetX: '-40px',
+                        offsetY: '1px'
+                    },
+                    size: '10px',
+                    x: '90%',
+                    y: '17%'
+                },
+                {
+                    type: 'rectangle',
+                    height: '10px',
+                    width: '30px',
+                    id: '6',
+                    backgroundColor: '#bcc9de',
+                    cursor: 'pointer',
+                    label: {
+                        text: '50-99',
+                        fontColor: '#000',
+                        fontSize: '9px',
+                        offsetX: '-35px',
+                        offsetY: '1px'
+                    },
+                    size: '10px',
+                    x: '90%',
+                    y: '20%'
+                },
+                {
+                    type: 'rectangle',
+                    height: '10px',
+                    width: '30px',
+                    id: '7',
+                    backgroundColor: '#dee2ea',
+                    cursor: 'pointer',
+                    label: {
+                        text: '0-49',
+                        fontColor: '#000',
+                        fontSize: '9px',
+                        offsetX: '-32px',
+                        offsetY: '1px'
+                    },
+                    size: '10px',
+                    x: '90%',
+                    y: '23%'
                 }
             ]
-        }
-    ;
+        };
 
     zingchart.loadModules('maps,maps-ind');
     zingchart.render({
