@@ -25,6 +25,9 @@ type CoronaUpdate struct {
 type StateData struct {
 	Id           string           `json:"id"`
 	Name         string           `json:"name"`
+	Code         string           `json:"code"`
+	Color        string           `json:"color"`
+	Display      string           `json:"display"`
 	Total        string           `json:"total"`
 	Active       string           `json:"active"`
 	LiveExit     string           `json:"exit"`

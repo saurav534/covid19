@@ -172,6 +172,9 @@ func CrowdData() *common.CoronaUpdate {
 			st.Active = data.Active
 			st.LiveExit = data.Recovered
 			st.Name = data.State
+			st.Code = common.StateCode[strings.ToLower(st.Name)]
+			st.Color = common.GetInfectColor(int32(toInt(st.Total)))
+			st.Display = st.Name + " - " + st.Total
 			st.Id = strings.ReplaceAll(st.Name, " ", "-")
 			st.District = stateToDistrictList[st.Name]
 			cured := toInt(data.Recovered)
@@ -335,6 +338,9 @@ func setStateWise(tbody *html.Node, update *common.CoronaUpdate) {
 					st.FatalPercent = "NA"
 					st.LivePercent = "NA"
 				}
+				st.Code = common.StateCode[strings.ToLower(st.Name)]
+				st.Color = common.GetInfectColor(int32(toInt(st.Total)))
+				st.Display = st.Name + " - " + st.Total
 				update.StateWise = append(update.StateWise, st)
 			}
 		}
