@@ -119,6 +119,11 @@ func CrowdData() *common.CoronaUpdate {
 	cs := &common.CrowdSource{}
 	_ = json.Unmarshal(bytes, cs)
 
+	covidDeltaChan := make(chan *common.CovidDelta)
+	go func() {
+		seriesDelta(covidDeltaChan, cs.CasesTimeSeries)
+	}()
+
 	// parse district data first
 	stataDistrictData := <-dataChannel
 	stateToDistrictList := make(map[string][]*common.CovidDistrict)
@@ -191,7 +196,7 @@ func CrowdData() *common.CoronaUpdate {
 			update.StateWise = append(update.StateWise, st)
 		}
 	}
-
+	update.SeriesDelta = <-covidDeltaChan
 	if data != nil {
 		update.Facebook = data.Facebook
 		update.Youtube = data.Youtube
@@ -209,6 +214,7 @@ func CrowdData() *common.CoronaUpdate {
 }
 
 func crowdDistrictData(dataChannel chan<- map[string]*common.StateDistrict) {
+	defer close(dataChannel)
 	constantBackoff := backoff.NewConstantBackOff(500 * time.Millisecond)
 	var resp *http.Response
 	var err error
@@ -230,6 +236,30 @@ func crowdDistrictData(dataChannel chan<- map[string]*common.StateDistrict) {
 		log.Printf("error happend %v", err)
 	}
 	dataChannel <- dd
+}
+
+func seriesDelta(seriesChan chan<- *common.CovidDelta, seriesData []common.CasesTimeSeries) {
+	defer close(seriesChan)
+	l := len(seriesData)
+	dates := make([]string, 0)
+	confirmed := make([]string, 0)
+	cured := make([]string, 0)
+	death := make([]string, 0)
+
+	for i := l - 21; i < l; i++ {
+		data := seriesData[i]
+		dates = append(dates, data.Date[:6])
+		confirmed = append(confirmed, data.Dailyconfirmed)
+		cured = append(cured, data.Dailyrecovered)
+		death = append(death, data.Dailydeceased)
+	}
+
+	seriesChan <- &common.CovidDelta{
+		Dates:     dates,
+		Confirmed: confirmed,
+		Cured:     cured,
+		Death:     death,
+	}
 }
 
 func parseNode(node *html.Node, update *common.CoronaUpdate, linkMap map[string]bool) {

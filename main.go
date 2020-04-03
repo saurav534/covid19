@@ -9,6 +9,7 @@ import (
 func main() {
 	engine := gin.Default()
 	engine.LoadHTMLGlob("templates/*")
+	engine.Static("/static","./static")
 	engine.GET("/", func(context *gin.Context) {
 		coronaUpdate := external.LiveData()
 		context.HTML(
