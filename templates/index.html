@@ -1,4 +1,4 @@
-<!--index.html-->
+<!--crowdsource.html-->
 
 <!doctype html>
 <html>
@@ -8,8 +8,8 @@
     <title>{{ .title }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no user-scalable=no">
-    <link rel="shortcut icon" href="/static/icons/favicon.ico" />
-    <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="/static/icons/favicon.ico"/>
+    <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"/>
 
     <!--Use bootstrap to make the application look nice-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -21,21 +21,26 @@
             height: 75px;
             margin: -75px 0 0;
         }
+
         .table-sm td, .table-sm th {
             font-size: 14px;
             padding: .5rem
         }
+
         .card-header {
             font-size: 16px;
             padding: .55rem 0.8rem;
         }
+
         .card-body {
-            padding: 0.3rem 0.8rem;
+            padding: 0.4rem 0.8rem;
         }
+
         .card-footer {
             font-size: 12px;
             padding: .55rem 0.8rem;
         }
+
         .chart--container {
             min-height: 530px;
             width: 100%;
@@ -54,6 +59,12 @@
             font-size: 11px;
             padding: 4px;
             font-weight: 300;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .navbar .container {
+                padding: 0;
+            }
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -91,72 +102,83 @@
 
 <body>
 <nav class="navbar fixed-top navbar-light bg-light" style="width: 100%;box-shadow: 0px 1px 7px 0px grey;">
-    <a class="navbar-brand" href="/">
-        <span class="badge badge-dark" style="font-size: 18px;">COVID-19</span>
-        <span class="col-6" style="font-size: 14px">{{.data.UpdateTime}}</span>
-    </a>
-    <div class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
-           aria-haspopup="true" aria-expanded="false" style="padding-left: 0; padding-right: 0">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <span class="badge badge-dark align-middle" style="font-size: 18px;">COVID-19</span>
+            <span class="col-6 align-middle" style="font-size: 14px">{{.data.UpdateTime}}</span>
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="left: auto; right: -10px">
-            <a class="dropdown-item" href="#state-wise">State Wise Status</a>
-            <a class="dropdown-item" href="#donate-pm-cares">Donate to PM-CARES</a>
-            <a class="dropdown-item" href="#imp-link">District Wise Cases</a>
+        <div class="nav-item dropdown">
+            <a class="navbar-toggler-icon" href="#" id="navbarDropdownMenuLink" role="button"
+               data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false" style="padding-left: 0; padding-right: 0">
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="left: auto; right: -10px">
+                <a class="dropdown-item" href="#state-wise">State Wise Status</a>
+                <a class="dropdown-item" href="#donate-pm-cares">Donate to PM-CARES</a>
+            </div>
         </div>
     </div>
 </nav>
 <div style="height: 50px"></div>
 <br>
-<div class="col-12">
+<div class="container">
     <div class="btn-group w-100" role="group" aria-label="source switch">
         <button type="button" class="btn btn-sm btn-primary active-source">Ministry of Health</button>
         <button type="button" class="btn btn-sm btn-outline-primary" onclick="changeSource()">Crowd Sourced</button>
     </div>
 </div>
 <br>
-<div class="col-xs-12">
-    <div class="col-12" style="font-size: 18px; margin-bottom: 10px">Pan India Status</div>
-    <div class="col-12 container">
-        <div class="row">
-            <div class="col-12 col-sm-6 col-md-7 col-lg-8">
-                <div class="table-responsive">
-                    <table class="table table-hover table-sm font-weight-light">
-                        <tr class="table-warning">
-                            <td>Total Cases</td>
-                            <td>{{.data.Total}}</td>
-                        </tr>
-                        <tr class="table-active">
-                            <td>Active COVID 2019 cases</td>
-                            <td>{{.data.Active}}</td>
-                        </tr>
-                        <tr class="table-success">
-                            <td>Cured/discharged cases</td>
-                            <td>{{.data.Cured}}</td>
-                        </tr>
-                        <tr class="table-danger">
-                            <td>Death</td>
-                            <td>{{.data.Death}}</td>
-                        </tr>
-                        <tr class="table-info">
-                            <td>Migrated COVID-19 Patient</td>
-                            <td>{{.data.Migrated}}</td>
-                        </tr>
-                    </table>
-                </div>
-                <input id="fatal-percent" value="{{.data.FatalPercent}}" style="display: none">
-                <input id="live-percent" value="{{.data.LivePercent}}" style="display: none">
-                <input id="closed-cases" value="{{.data.Closed}}" style="display: none">
+<div class="container">
+    <div style="font-size: 18px; margin-bottom: 10px">Pan India Status</div>
+    <div class="row align-items-center">
+        <div class="col-12 col-sm-6">
+            <div class="table-responsive">
+                <table class="table table-hover table-sm font-weight-light">
+                    <tr class="table-warning">
+                        <td>Total Cases</td>
+                        <td>{{.data.Total}}
+                            {{if .data.Delta.Confirmeddelta}}
+                                <span style="color: darkred; font-size: 11px"> [+{{.data.Delta.Confirmeddelta}}]</span>
+                            {{ end }}
+                        </td>
+                    </tr>
+                    <tr class="table-active">
+                        <td>Active COVID 2019 cases</td>
+                        <td>{{.data.Active}}</td>
+                    </tr>
+                    <tr class="table-success">
+                        <td>Cured/discharged cases</td>
+                        <td>{{.data.Cured}}
+                            {{if .data.Delta.Recovereddelta}}
+                                <span style="color: darkgreen; font-size: 11px"> [+{{.data.Delta.Recovereddelta}}]</span>
+                            {{ end }}
+                        </td>
+                    </tr>
+                    <tr class="table-danger">
+                        <td>Death</td>
+                        <td>{{.data.Death}}
+                            {{if .data.Delta.Deceaseddelta}}
+                                <span style="color: #484848; font-size: 11px"> [+{{.data.Delta.Deceaseddelta}}]</span>
+                            {{ end }}
+                        </td>
+                    </tr>
+                </table>
             </div>
+        </div>
+        <div class="col-12 offset-sm-1 col-sm-4" style="padding: 0">
+            <div id="india-map" class="chart--container"></div>
         </div>
     </div>
 </div>
-<div id="india-map" class="chart--container"></div>
-<div class="col-12">
-    <canvas id="myChart" width="400" max-height="250"></canvas>
+<div class="container">
+    <div class="row align-items-center">
+        <div class="col-12 col-md-6">
+            <canvas id="closed-cases" width="400" max-height="250"></canvas>
+        </div>
+    </div>
 </div>
 <br>
-<div class="col-12" id="state-wise">
+<div class="container" id="state-wise">
     <div class="row">
         <div class="col-6" style="font-size: 18px; padding-top: 5px">State wise Status
         </div>
@@ -165,14 +187,12 @@
         </div>
     </div>
 </div>
-
 <div class="container">
     <div class="row" id="all-state" style="margin-top: 15px">
         {{ with .data.StateWise }}
             {{ range . }}
-                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                    <div class="state-card card text-white bg-secondary mb-3 font-weight-light" state="{{.Name}}"
-                         style="max-width: 24rem;">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="state-card card text-white bg-secondary mb-3 font-weight-light" state="{{.Name}}">
                         <div class="card-header font-weight-normal">
                             <span>{{.Name}}</span>
                             <span class="badge float-right font-weight-light"
@@ -210,33 +230,31 @@
     </div>
 </div>
 <br>
-<div class="col-xs-12" id="donate-pm-cares">
-    <div class="col-12" style="font-size: 18px; font-weight: bold; margin-bottom: 10px">Donate - <a
+<div class="container" id="donate-pm-cares">
+    <div style="font-size: 18px; margin-bottom: 10px">Donate - <a
                 href="https://pmindia.gov.in" class="font-weight-light">pmindia.gov.in</a></div>
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                <div class="card border-success mb-3" style="max-width: 24rem;">
-                    <div class="card-header">NEFT / RTGS / UPI</div>
-                    <div class="card-body text-success">
-                        <div class="row">
-                            <div class="col-6 font-weight-light">Name of Account</div>
-                            <div class="col-6 font-weight-light">PM CARES</div>
-                            <div class="col-6 font-weight-light">Account Number</div>
-                            <div class="col-6 font-weight-light">2121PM20202</div>
-                            <div class="col-6 font-weight-light">IFSC Code</div>
-                            <div class="col-6 font-weight-light">SBIN0000691</div>
-                            <div class="col-6 font-weight-light">SWIFT Code</div>
-                            <div class="col-6 font-weight-light">SBININBB104</div>
-                        </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+            <div class="card border-success mb-3" style="max-width: 24rem;">
+                <div class="card-header">NEFT / RTGS / UPI</div>
+                <div class="card-body text-success">
+                    <div class="row">
+                        <div class="col-6 font-weight-light">Name of Account</div>
+                        <div class="col-6 font-weight-light">PM CARES</div>
+                        <div class="col-6 font-weight-light">Account Number</div>
+                        <div class="col-6 font-weight-light">2121PM20202</div>
+                        <div class="col-6 font-weight-light">IFSC Code</div>
+                        <div class="col-6 font-weight-light">SBIN0000691</div>
+                        <div class="col-6 font-weight-light">SWIFT Code</div>
+                        <div class="col-6 font-weight-light">SBININBB104</div>
                     </div>
-                    <div class="card-footer text-success">
-                        <div class="row">
-                            <div class="col-6 font-weight-light">UPI click to pay</div>
-                            <div class="col-6">
-                                <button type="button" class="btn btn-success btn-sm" onclick="payupi()">pmcares@sbi
-                                </button>
-                            </div>
+                </div>
+                <div class="card-footer text-success">
+                    <div class="row">
+                        <div class="col-6 font-weight-light">UPI click to pay</div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-success btn-sm" onclick="payupi()">pmcares@sbi
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -245,109 +263,118 @@
     </div>
 </div>
 <br>
-<div class="col-xs-12" id="imp-link">
-    <div class="col-12" style="font-size: 18px; font-weight: bold; margin-bottom: 10px">Important Links</div>
-    <div class="col-12">
-        <a href="{{.data.DistrictWise}}">
-            <span style="margin-right: 5px" class="float-left"><img
-                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="></span>
-            <span style="word-wrap: break-word;">District Wise Cases</span>
-        </a>
+<div class="container" id="imp-link">
+    <div style="font-size: 18px; margin-bottom: 10px">Important Links</div>
+    <div class="row">
+        <div class="col-1" style="max-width: 15px">
+                    <span style="float: left">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="
+                             alt="link">
+                    </span>
+        </div>
+        <div class="col-11 p-0">
+            <a href="{{.data.HelpLine}}">
+                <span style="word-wrap: break-word;">COVID-19 Helpline</span>
+            </a>
+        </div>
     </div>
-    <div class="col-12">
-        <a href="{{.data.HelpLine}}">
-            <span style="margin-right: 5px" class="float-left"><img
-                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="></span>
-            <span style="word-wrap: break-word;">COVID-19 Helpline</span>
-        </a>
-    </div>
-    <div class="col-12">
-        <a href="{{.data.Faq}}">
-            <span style="margin-right: 5px" class="float-left"><img
-                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="></span>
-            <span style="word-wrap: break-word;">Frequently Asked Question</span>
-        </a>
+    <div class="row">
+        <div class="col-1" style="max-width: 15px">
+                    <span style="float: left">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="
+                             alt="link">
+                    </span>
+        </div>
+        <div class="col-11 p-0">
+            <a href="{{.data.Faq}}">
+                <span style="word-wrap: break-word;">Frequently Asked Question</span>
+            </a>
+        </div>
     </div>
 </div>
 <br>
-<div class="col-xs-12">
-    <div class="col-12" style="font-size: 18px; font-weight: bold; margin-bottom: 10px; margin-top: 15px">Other Links
+<div class="container">
+    <div style="font-size: 18px; margin-bottom: 10px; margin-top: 15px">Other
+        Links
     </div>
     {{ with .data.Links }}
         {{ range . }}
-            <div class="col-12">
-                <a href="{{.}}">
-                    <span style="margin-right: 5px" class="float-left"><img
-                                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="></span>
-                    <span style="word-wrap: break-word;">{{.}}</span></a></div>
+            <div class="row">
+                <div class="col-1" style="max-width: 15px">
+                    <span style="float: left">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="
+                             alt="link">
+                    </span>
+                </div>
+                <div class="col-11 p-0">
+                    <a href="{{.}}">
+                        <span style="word-wrap: break-word;">{{.}}</span>
+                    </a>
+                </div>
+            </div>
         {{ end }}
     {{end}}
 </div>
 <br>
-<div class="col-xs-12">
-    <div class="col-12" style="font-size: 18px; font-weight: bold; margin-bottom: 10px; margin-top: 15px">Ministry of
+<div class="container">
+    <div style="font-size: 18px; margin-bottom: 10px; margin-top: 15px">Ministry
+        of
         Health
     </div>
-    <div class="col-12">
-        <div class="row">
-            <div class="col-1">
-                <a class="navbar-brand float-left" href="{{.data.Facebook}}"
-                   style="cursor: pointer; padding-top: 3px;">
-                    <img style="height: 20px;"
-                         src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/facebook-icon_square_24x24.png"
-                         alt="FB">
-                </a>
-            </div>
-            <div class="col-1">
-                <a class="navbar-brand float-left" href="{{.data.Twitter}}"
-                   style="cursor: pointer; padding-top: 3px;">
-                    <img style="height: 20px;"
-                         src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/twitter-icon_square_24x24.png"
-                         alt="Twitter">
-                </a>
-            </div>
-            <div class="col-1">
-                <a class="navbar-brand float-left" href="{{.data.Youtube}}"
-                   style="cursor: pointer; padding-top: 3px;">
-                    <img style="height: 20px;"
-                         src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/youtube-icon_square_24x24.png"
-                         alt="YT">
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-<div style="height: 50px"></div>
-<div style="position: fixed;bottom: 0;z-index: 100;width: 100%;box-shadow: 0px 1px 7px 0px grey;">
-    <div class="row" style="background: #f8f9fa;">
-        <div class="col-10" style="padding: 10px 0 0 32px;font-size: 12px;color: gray;">
-            © 2020-2021 Saurav Singh
-        </div>
-        <div class="col-1">
-            <a class="navbar-brand float-right" href="https://www.facebook.com/saurav431"
+    <div class="row">
+        <div class="col-12">
+            <a class="navbar-brand float-left" href="{{.data.Facebook}}"
                style="cursor: pointer; padding-top: 3px;">
                 <img style="height: 20px;"
                      src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/facebook-icon_square_24x24.png"
                      alt="FB">
             </a>
-        </div>
-        <div class="col-1">
-            <a class="navbar-brand float-right" href="https://www.linkedin.com/in/saurav-singh-25317625/"
+            <a class="navbar-brand float-left" href="{{.data.Twitter}}"
                style="cursor: pointer; padding-top: 3px;">
                 <img style="height: 20px;"
-                     src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/linkedin-icon_square_24x24.png"
-                     alt="Linkedin">
+                     src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/twitter-icon_square_24x24.png"
+                     alt="Twitter">
             </a>
+            <a class="navbar-brand float-left" href="{{.data.Youtube}}"
+               style="cursor: pointer; padding-top: 3px;">
+                <img style="height: 20px;"
+                     src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/youtube-icon_square_24x24.png"
+                     alt="YT">
+            </a>
+        </div>
+    </div>
+</div>
+<div style="height: 50px"></div>
+<div style="position: fixed;background: #f8f9fa; bottom: 0;z-index: 100;width: 100%;box-shadow: 0 1px 7px 0 grey;">
+    <div class="container">
+        <div class="row">
+            <div class="col-8" style="padding: 10px 0 0 15px;font-size: 12px;color: gray;">
+                © 2020-2021 Saurav Singh
+            </div>
+            <div class="col-4" style="padding-right: 0px">
+                <a class="navbar-brand float-right" href="https://www.facebook.com/saurav431"
+                   style="cursor: pointer; padding-top: 0">
+                    <img style="height: 20px;"
+                         src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/facebook-icon_square_24x24.png"
+                         alt="FB">
+                </a>
+                <a class="navbar-brand float-right" href="https://www.linkedin.com/in/saurav-singh-25317625/"
+                   style="cursor: pointer; padding-top: 0">
+                    <img style="height: 20px;"
+                         src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/linkedin-icon_square_24x24.png"
+                         alt="Linkedin">
+                </a>
+            </div>
         </div>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
+    var ctx = document.getElementById('closed-cases').getContext('2d');
+    var closedCases = new Chart(ctx, {
         type: 'horizontalBar',
         data: {
-            labels: ['Cured % of Closed', 'Fatal % of Closed'],
+            labels: ['Cured', 'Fatal'],
             datasets: [{
                 label: '%',
                 data: [{{.data.LivePercent}}, {{.data.FatalPercent}}],
@@ -372,12 +399,16 @@
                     }
                 }],
                 yAxes: [{
-                    display: false
+                    display: true,
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
                 }]
             },
             layout: {
                 padding: {
-                    left: -30
+                    left: -11
                 }
             },
             title: {
@@ -569,7 +600,6 @@
             }
         ]
     };
-
     zingchart.loadModules('maps,maps-ind');
     zingchart.render({
         id: 'india-map',

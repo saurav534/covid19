@@ -20,7 +20,7 @@ type CoronaUpdate struct {
 	Facebook          string       `json:"facebook"`
 	Twitter           string       `json:"twitter"`
 	Links             []string     `json:"links"`
-	SeriesDelta       *CovidDelta   `json:"series_delta"`
+	SeriesDelta       *CovidDelta  `json:"series_delta"`
 }
 
 type StateData struct {
@@ -36,6 +36,7 @@ type StateData struct {
 	Closed       string           `json:"closed_case"`
 	FatalPercent string           `json:"fatal_percent"`
 	LivePercent  string           `json:"live_percent"`
+	Delta        Delta            `json:"delta"`
 	District     []*CovidDistrict `json:"district"`
 }
 

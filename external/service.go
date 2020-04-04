@@ -177,6 +177,7 @@ func CrowdData() *common.CoronaUpdate {
 			st.Active = data.Active
 			st.LiveExit = data.Recovered
 			st.Name = data.State
+			st.Delta = data.Delta
 			st.Code = common.StateCode[strings.ToLower(st.Name)]
 			st.Color = common.GetInfectColor(int32(toInt(st.Total)))
 			st.Display = st.Name + " - " + st.Total
