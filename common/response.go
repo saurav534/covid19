@@ -1,43 +1,50 @@
 package common
 
 type CoronaUpdate struct {
-	UpdateTime        string       `json:"update_time"`
-	Total             string       `json:"total"`
-	Active            string       `json:"active"`
-	Cured             string       `json:"cured"`
-	Death             string       `json:"death"`
-	Delta             KeyValues    `json:"delta"`
-	Closed            string       `json:"closed_case"`
-	FatalPercent      string       `json:"fatal_percent"`
-	LivePercent       string       `json:"live_percent"`
-	Migrated          string       `json:"migrated"`
-	ScreenedAtAirport string       `json:"screened_at_airport"`
-	StateWise         []*StateData `json:"state_wise"`
-	DistrictWise      string       `json:"district_wise"`
-	HelpLine          string       `json:"help_line"`
-	Faq               string       `json:"faq"`
-	Youtube           string       `json:"youtube"`
-	Facebook          string       `json:"facebook"`
-	Twitter           string       `json:"twitter"`
-	Links             []string     `json:"links"`
-	SeriesDelta       *CovidDelta  `json:"series_delta"`
+	UpdateTime        string
+	Total             string
+	Active            string
+	Cured             string
+	Death             string
+	Delta             KeyValues
+	Closed            string
+	FatalPercent      string
+	LivePercent       string
+	Migrated          string
+	ScreenedAtAirport string
+	StateWise         []*StateData
+	DistrictWise      string
+	SampleTested      string
+	HelpLine          string
+	Faq               string
+	Youtube           string
+	Facebook          string
+	Twitter           string
+	Links             []string
+	SeriesDelta       *CovidDelta
+	Tested            *CoronaTest
+}
+
+type CoronaTest struct {
+	Date        []string
+	TotalSample []int
 }
 
 type StateData struct {
-	Id           string           `json:"id"`
-	Name         string           `json:"name"`
-	Code         string           `json:"code"`
-	Color        string           `json:"color"`
-	Display      string           `json:"display"`
-	Total        string           `json:"total"`
-	Active       string           `json:"active"`
-	LiveExit     string           `json:"exit"`
-	Death        string           `json:"death"`
-	Closed       string           `json:"closed_case"`
-	FatalPercent string           `json:"fatal_percent"`
-	LivePercent  string           `json:"live_percent"`
-	Delta        Delta            `json:"delta"`
-	District     []*CovidDistrict `json:"district"`
+	Id           string
+	Name         string
+	Code         string
+	Color        string
+	Display      string
+	Total        string
+	Active       string
+	LiveExit     string
+	Death        string
+	Closed       string
+	FatalPercent string
+	LivePercent  string
+	Delta        Delta
+	District     []*CovidDistrict
 }
 
 type CovidDelta struct {

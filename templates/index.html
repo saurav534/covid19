@@ -136,11 +136,7 @@
                 <table class="table table-hover table-sm font-weight-light">
                     <tr class="table-warning">
                         <td>Total Cases</td>
-                        <td>{{.data.Total}}
-                            {{if .data.Delta.Confirmeddelta}}
-                                <span style="color: darkred; font-size: 11px"> [+{{.data.Delta.Confirmeddelta}}]</span>
-                            {{ end }}
-                        </td>
+                        <td>{{.data.Total}}</td>
                     </tr>
                     <tr class="table-active">
                         <td>Active COVID 2019 cases</td>
@@ -148,19 +144,15 @@
                     </tr>
                     <tr class="table-success">
                         <td>Cured/discharged cases</td>
-                        <td>{{.data.Cured}}
-                            {{if .data.Delta.Recovereddelta}}
-                                <span style="color: darkgreen; font-size: 11px"> [+{{.data.Delta.Recovereddelta}}]</span>
-                            {{ end }}
-                        </td>
+                        <td>{{.data.Cured}}</td>
                     </tr>
                     <tr class="table-danger">
                         <td>Death</td>
-                        <td>{{.data.Death}}
-                            {{if .data.Delta.Deceaseddelta}}
-                                <span style="color: #484848; font-size: 11px"> [+{{.data.Delta.Deceaseddelta}}]</span>
-                            {{ end }}
-                        </td>
+                        <td>{{.data.Death}}</td>
+                    </tr>
+                    <tr class="table-info">
+                        <td>Migrated COVID-19 Patient</td>
+                        <td>{{.data.Migrated}}</td>
                     </tr>
                 </table>
             </div>

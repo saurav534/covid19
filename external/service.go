@@ -119,10 +119,25 @@ func CrowdData() *common.CoronaUpdate {
 	cs := &common.CrowdSource{}
 	_ = json.Unmarshal(bytes, cs)
 
+	// set time series data
 	covidDeltaChan := make(chan *common.CovidDelta)
 	go func() {
 		seriesDelta(covidDeltaChan, cs.CasesTimeSeries)
 	}()
+
+	// set covid test data
+	tests := cs.Tested
+	coronaTestChan := make(chan *common.CoronaTest)
+	go func() {
+		coronaTested(coronaTestChan, tests)
+	}()
+
+	for i := len(cs.Tested) - 1; i >= 0; i-- {
+		if strings.Trim(cs.Tested[i].Totalsamplestested, " ") != "" {
+			update.SampleTested = cs.Tested[i].Totalsamplestested
+			break
+		}
+	}
 
 	// parse district data first
 	stataDistrictData := <-dataChannel
@@ -198,6 +213,7 @@ func CrowdData() *common.CoronaUpdate {
 		}
 	}
 	update.SeriesDelta = <-covidDeltaChan
+	update.Tested = <-coronaTestChan
 	if data != nil {
 		update.Facebook = data.Facebook
 		update.Youtube = data.Youtube
@@ -260,6 +276,43 @@ func seriesDelta(seriesChan chan<- *common.CovidDelta, seriesData []common.Cases
 		Confirmed: confirmed,
 		Cured:     cured,
 		Death:     death,
+	}
+}
+
+func coronaTested(covidTestChan chan<- *common.CoronaTest, tested []common.Tested) {
+	defer close(covidTestChan)
+	testMap := make(map[string]int)
+	testMapRev := make(map[int]string)
+	cumTest := make([]int, 0)
+	for _, test := range tested {
+		st := strings.Trim(test.Totalsamplestested, " ")
+		if st != "" {
+			date := strings.Split(test.Updatetimestamp, " ")[0]
+			i, err := strconv.Atoi(st)
+			if err == nil {
+				testMap[date] = i
+			}
+		}
+	}
+
+	for k, v := range testMap {
+		cumTest = append(cumTest, v)
+		testMapRev[v] = k
+	}
+
+	sort.Ints(cumTest)
+	testLen := len(cumTest)
+	dates := make([]string, 0)
+	sampleTested := make([]int, 0)
+	for i := testLen - 6; i < testLen; i++ {
+		updateTime, _ := time.Parse("2/1/2006", testMapRev[cumTest[i]])
+		dates = append(dates, updateTime.Format("02 Jan"))
+		sampleTested = append(sampleTested, cumTest[i] - cumTest[i-1])
+		updateTime.Format("02 Jan")
+	}
+	covidTestChan <- &common.CoronaTest{
+		Date:        dates,
+		TotalSample: sampleTested,
 	}
 }
 
