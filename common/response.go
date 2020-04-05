@@ -6,7 +6,7 @@ type CoronaUpdate struct {
 	Active            string
 	Cured             string
 	Death             string
-	Delta             KeyValues
+	Delta             *Delta
 	Closed            string
 	FatalPercent      string
 	LivePercent       string
@@ -43,7 +43,7 @@ type StateData struct {
 	Closed       string
 	FatalPercent string
 	LivePercent  string
-	Delta        Delta
+	Delta        *Delta
 	District     []*CovidDistrict
 }
 

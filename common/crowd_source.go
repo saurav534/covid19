@@ -2,7 +2,6 @@ package common
 
 type CrowdSource struct {
 	CasesTimeSeries []CasesTimeSeries `json:"cases_time_series"`
-	KeyValues       []KeyValues       `json:"key_values"`
 	Statewise       []Statewise       `json:"statewise"`
 	Tested          []Tested          `json:"tested"`
 }
@@ -15,28 +14,23 @@ type CasesTimeSeries struct {
 	Totaldeceased  string `json:"totaldeceased"`
 	Totalrecovered string `json:"totalrecovered"`
 }
-type KeyValues struct {
-	Confirmeddelta           string `json:"confirmeddelta"`
-	Counterforautotimeupdate string `json:"counterforautotimeupdate"`
-	Deceaseddelta            string `json:"deceaseddelta"`
-	Lastupdatedtime          string `json:"lastupdatedtime"`
-	Recovereddelta           string `json:"recovereddelta"`
-	Statesdelta              string `json:"statesdelta"`
-}
 type Delta struct {
-	Active    int32 `json:"active"`
-	Confirmed int32 `json:"confirmed"`
-	Deaths    int32 `json:"deaths"`
-	Recovered int32 `json:"recovered"`
+	Active    string `json:"active"`
+	Confirmed string `json:"confirmed"`
+	Deaths    string `json:"deaths"`
+	Recovered string `json:"recovered"`
 }
 type Statewise struct {
 	Active          string `json:"active"`
 	Confirmed       string `json:"confirmed"`
 	Deaths          string `json:"deaths"`
-	Delta           Delta  `json:"delta"`
+	Deltaconfirmed  string `json:"deltaconfirmed"`
+	Deltadeaths     string `json:"deltadeaths"`
+	Deltarecovered  string `json:"deltarecovered"`
 	Lastupdatedtime string `json:"lastupdatedtime"`
 	Recovered       string `json:"recovered"`
 	State           string `json:"state"`
+	Statecode       string `json:"statecode"`
 }
 type Tested struct {
 	Source                      string `json:"source"`

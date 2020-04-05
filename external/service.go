@@ -165,13 +165,17 @@ func CrowdData() *common.CoronaUpdate {
 		stateToDistrictList[value.String()] = covidDistrict
 	}
 
-	update.Delta = cs.KeyValues[0]
 	for _, data := range cs.Statewise {
 		if data.State == "Total" {
 			update.Total = data.Confirmed
 			update.Active = data.Active
 			update.Cured = data.Recovered
 			update.Death = data.Deaths
+			update.Delta = &common.Delta{
+				Confirmed: data.Deltaconfirmed,
+				Deaths:    data.Deltadeaths,
+				Recovered: data.Deltarecovered,
+			}
 			updateTime, _ := time.Parse("02/01/2006 15:04:05", data.Lastupdatedtime)
 			update.UpdateTime = updateTime.Format("02 Jan, 03:04 PM")
 			cured := toInt(data.Recovered)
@@ -192,7 +196,11 @@ func CrowdData() *common.CoronaUpdate {
 			st.Active = data.Active
 			st.LiveExit = data.Recovered
 			st.Name = data.State
-			st.Delta = data.Delta
+			st.Delta = &common.Delta{
+				Confirmed: data.Deltaconfirmed,
+				Deaths:    data.Deltadeaths,
+				Recovered: data.Deltarecovered,
+			}
 			st.Code = common.StateCode[strings.ToLower(st.Name)]
 			st.Color = common.GetInfectColor(int32(toInt(st.Total)))
 			st.Display = st.Name + " - " + st.Total
