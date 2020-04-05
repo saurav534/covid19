@@ -45,6 +45,7 @@ type StateData struct {
 	LivePercent  string
 	Delta        *Delta
 	District     []*CovidDistrict
+
 }
 
 type CovidDelta struct {

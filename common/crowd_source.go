@@ -48,7 +48,14 @@ type StateDistrict struct {
 type PerDistrict struct {
 	Confirmed       int32  `json:"confirmed"`
 	Lastupdatedtime string `json:"lastupdatedtime"`
-	Delta           Delta  `json:"delta"`
+	Delta           CDDelta  `json:"delta"`
+}
+
+type CDDelta struct {
+	Active    int `json:"active"`
+	Confirmed int `json:"confirmed"`
+	Deaths    int `json:"deaths"`
+	Recovered int `json:"recovered"`
 }
 
 type CovidDistrict struct {

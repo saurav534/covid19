@@ -251,7 +251,7 @@
                                                                  style="font-size: 11px; padding-right: 0; padding-left: 13px">{{.Name}}</div>
                                                             <div class="col-4 font-weight-light"
                                                                  style="font-size: 11px; padding-right: 5px; padding-left: 3px">{{.Confirmed}}
-                                                                {{if .Delta.Confirmed}}
+                                                                {{if ne .Delta.Confirmed "0"}}
                                                                     <span style="color: #e23028; font-size: 10px"> [+{{.Delta.Confirmed}}]</span>
                                                                 {{ end }}
                                                             </div>
@@ -474,7 +474,7 @@
                 backgroundColor: '#174ea6',
                 cursor: 'pointer',
                 label: {
-                    text: '300+',
+                    text: '400+',
                     fontColor: '#000',
                     fontSize: '9px',
                     offsetX: '-30px',
@@ -492,7 +492,7 @@
                 backgroundColor: '#2558a9',
                 cursor: 'pointer',
                 label: {
-                    text: '250-299',
+                    text: '300-400',
                     fontColor: '#000',
                     fontSize: '9px',
                     offsetX: '-40px',
@@ -510,7 +510,7 @@
                 backgroundColor: '#406cb1',
                 cursor: 'pointer',
                 label: {
-                    text: '200-249',
+                    text: '200-300',
                     fontColor: '#000',
                     fontSize: '9px',
                     offsetX: '-40px',

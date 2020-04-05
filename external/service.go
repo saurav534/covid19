@@ -156,7 +156,9 @@ func CrowdData() *common.CoronaUpdate {
 				Name:            val.String(),
 				Confirmed:       districtData.Confirmed,
 				Lastupdatedtime: districtData.Lastupdatedtime,
-				Delta:           districtData.Delta,
+				Delta:           common.Delta{
+					Confirmed: strconv.Itoa(districtData.Delta.Confirmed),
+				},
 			})
 		}
 		sort.Slice(covidDistrict, func(i, j int) bool {
