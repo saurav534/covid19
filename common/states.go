@@ -36,6 +36,7 @@ func init() {
 		"manipur" : "MN",
 		"mizoram" : "MZ",
 		"arunachal pradesh" : "AR",
+		"tripura": "TR",
 	}
 }
 

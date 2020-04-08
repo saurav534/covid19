@@ -1,0 +1,160 @@
+<!--commonfooter.html-->
+
+<br>
+<div class="container" id="donate-pm-cares">
+    <div style="font-size: 18px; margin-bottom: 10px">Donate - <a
+                href="https://pmindia.gov.in" class="font-weight-light">pmindia.gov.in</a></div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+            <div class="card border-success mb-3" style="max-width: 24rem;">
+                <div class="card-header">NEFT / RTGS / UPI</div>
+                <div class="card-body text-success">
+                    <div class="row">
+                        <div class="col-6 font-weight-light">Name of Account</div>
+                        <div class="col-6 font-weight-light">PM CARES</div>
+                        <div class="col-6 font-weight-light">Account Number</div>
+                        <div class="col-6 font-weight-light">2121PM20202</div>
+                        <div class="col-6 font-weight-light">IFSC Code</div>
+                        <div class="col-6 font-weight-light">SBIN0000691</div>
+                        <div class="col-6 font-weight-light">SWIFT Code</div>
+                        <div class="col-6 font-weight-light">SBININBB104</div>
+                    </div>
+                </div>
+                <div class="card-footer text-success">
+                    <div class="row">
+                        <div class="col-6 font-weight-light">UPI click to pay</div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-success btn-sm" onclick="payupi()">pmcares@sbi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container" id="imp-link">
+    <div style="font-size: 18px; margin-bottom: 10px">Important Links</div>
+    <div class="row">
+        <div class="col-1" style="max-width: 15px">
+                    <span style="float: left">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="
+                             alt="link">
+                    </span>
+        </div>
+        <div class="col-11 p-0">
+            <a href="{{.data.HelpLine}}">
+                <span style="word-wrap: break-word;">COVID-19 Helpline</span>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-1" style="max-width: 15px">
+                    <span style="float: left">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="
+                             alt="link">
+                    </span>
+        </div>
+        <div class="col-11 p-0">
+            <a href="{{.data.Faq}}">
+                <span style="word-wrap: break-word;">Frequently Asked Question</span>
+            </a>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container">
+    <div style="font-size: 18px; margin-bottom: 10px; margin-top: 15px">Other
+        Links
+    </div>
+    {{ with .data.Links }}
+        {{ range . }}
+            <div class="row">
+                <div class="col-1" style="max-width: 15px">
+                    <span style="float: left">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAVklEQVR4Xn3PgQkAMQhDUXfqTu7kTtkpd5RA8AInfArtQ2iRXFWT2QedAfttj2FsPIOE1eCOlEuoWWjgzYaB/IkeGOrxXhqB+uA9Bfcm0lAZuh+YIeAD+cAqSz4kCMUAAAAASUVORK5CYII="
+                             alt="link">
+                    </span>
+                </div>
+                <div class="col-11 p-0">
+                    <a href="{{.}}">
+                        <span style="word-wrap: break-word;">{{.}}</span>
+                    </a>
+                </div>
+            </div>
+        {{ end }}
+    {{end}}
+</div>
+<br>
+<div class="container">
+    <div style="font-size: 18px; margin-bottom: 10px; margin-top: 15px">Ministry
+        of
+        Health
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <a class="navbar-brand float-left" href="{{.data.Facebook}}"
+               style="cursor: pointer; padding-top: 3px;">
+                <img style="height: 20px;"
+                     src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/facebook-icon_square_24x24.png"
+                     alt="FB">
+            </a>
+            <a class="navbar-brand float-left" href="{{.data.Twitter}}"
+               style="cursor: pointer; padding-top: 3px;">
+                <img style="height: 20px;"
+                     src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/twitter-icon_square_24x24.png"
+                     alt="Twitter">
+            </a>
+            <a class="navbar-brand float-left" href="{{.data.Youtube}}"
+               style="cursor: pointer; padding-top: 3px;">
+                <img style="height: 20px;"
+                     src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/youtube-icon_square_24x24.png"
+                     alt="YT">
+            </a>
+        </div>
+    </div>
+</div>
+<div style="height: 50px"></div>
+<div style="position: fixed;background: #f8f9fa; bottom: 0;z-index: 100;width: 100%;box-shadow: 0 1px 7px 0 grey;height: 25px">
+    <div class="container">
+        <div class="row">
+            <div class="col-8" style="padding: 5px 0 0 15px;font-size: 10px;color: gray;">
+                © 2020-2021 Saurav Singh
+            </div>
+            <div class="col-4" style="padding-right: 0px">
+                <a class="navbar-brand float-right" href="https://www.facebook.com/saurav431"
+                   style="cursor: pointer; padding-top: 0;">
+                    <img style="height: 15px; margin-top: -9px"
+                         src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/facebook-icon_square_24x24.png"
+                         alt="FB">
+                </a>
+                <a class="navbar-brand float-right" href="https://www.linkedin.com/in/saurav-singh-25317625/"
+                   style="cursor: pointer; padding-top: 0; margin-right: 10px">
+                    <img style="height: 15px; margin-top: -9px"
+                         src="https://68ef2f69c7787d4078ac-7864ae55ba174c40683f10ab811d9167.ssl.cf1.rackcdn.com/linkedin-icon_square_24x24.png"
+                         alt="Linkedin">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="news blue">
+    <span style="z-index: 100;background: #007bff; color: white; padding: 3px; box-shadow: 1px 0px 3px 0px #dadada;">Headlines</span>
+    <span style="bottom: 25px;
+        padding-top: 0px;
+        background: white;
+        box-shadow: 0px -1px 5px 0px #c5c5c5;">
+            <marquee style="padding-top: 1px">
+                {{ with .data.News.Articles }}
+                    {{ range . }}
+                        <a href="{{.URL}}"><span class="badge badge-primary">{{.Source.Name}}</span></a>
+                        <a href="{{.URL}}"><span style="font-size: 10px; padding-top: 20px" class="">
+                            {{.Title}}
+                            </span></a>
+                    {{ end }}
+                {{ end }}
+            </marquee>
+        </span>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>

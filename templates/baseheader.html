@@ -1,0 +1,116 @@
+<!--baseheader.html-->
+
+<head>
+    <!--Use the title variable to set the title of the page-->
+    <title>{{ .title }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no user-scalable=no">
+    <link rel="shortcut icon" href="/static/icons/favicon.ico"/>
+    <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"/>
+
+    <!--Use bootstrap to make the application look nice-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        :target:before {
+            content: "";
+            display: block;
+            height: 75px;
+            margin: -75px 0 0;
+        }
+
+        .table-sm td, .table-sm th {
+            font-size: 14px;
+            padding: .5rem
+        }
+
+        .card-header {
+            font-size: 16px;
+            padding: .55rem 0.8rem;
+        }
+
+        .card-body {
+            padding: 0.4rem 0.8rem;
+        }
+
+        .card-footer {
+            font-size: 12px;
+            padding: .55rem 0.8rem;
+        }
+
+        .chart--container {
+            min-height: 530px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .zc-ref, .zc-menu, #india-map-tools {
+            display: none !important;
+        }
+
+        #india-map-license-text {
+            top: -15px !important;
+        }
+
+        .zc-html-mode td {
+            font-size: 11px;
+            padding: 4px;
+            font-weight: 300;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .navbar .container {
+                padding: 0;
+            }
+
+            .top-on-mobile {
+                margin-top: 20px;
+            }
+        }
+
+        .blue {
+            background: #347fd0;
+        }
+
+        .news > span {
+            float: left;
+            color: #007bff;
+            cursor: pointer;
+            position: fixed;
+            bottom: 25px;
+            font-size: 11px;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+    <script>
+        function filterState() {
+            var text = $("#state-filter").val();
+            $(".state-card").each(function () {
+                if ($(this).attr("state").toLowerCase().indexOf(text.toLowerCase()) < 0) {
+                    $(this).css("display", "none")
+                } else {
+                    $(this).css("display", "")
+                }
+            })
+        }
+
+        function payupi() {
+            window.location = "upi://pay?pa=pmcares@sbi";
+        }
+
+        function changeSource() {
+            $(".active-source").addClass("btn-outline-primary");
+            $(".active-source").removeClass("btn-primary");
+            window.location = {{.nextTab}};
+        }
+    </script>
+    <script data-ad-client="ca-pub-8842415115243274" async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+</head>

@@ -1,0 +1,185 @@
+<script>
+    var chartConfig = {
+        shapes: [
+            {
+                type: 'zingchart.maps',
+                options: {
+                    name: 'ind',
+                    panning: false, // turn of zooming. Doesn't work with bounding box
+                    zooming: false,
+                    scrolling: false,
+                    style: {
+                        backgroundColor: "#fff",
+                        tooltip: {
+                            borderColor: '#000',
+                            borderWidth: '1px',
+                            fontSize: '12px'
+                        },
+                        borderColor: '#000',
+                        borderWidth: '1px',
+                        controls: {
+                            visible: false // turn of zooming. Doesn't work with bounding box
+                        },
+                        hoverState: {
+                            alpha: .28
+                        },
+                        items: {
+                            {{ with .data.StateWise }}
+                            {{ range . }}
+                            "{{ .Code }}": {
+                                tooltip: {
+                                    text: "<table style=\"width: 110px\" class=\"table table-sm\"><tr><td colspan=\"2\" style=\"text-align: center; font-weight: bold\">{{.Name}}</td></tr><tr class=\"table-warning\"><td>Total</td><td>{{.Total}}</td></tr><tr class=\"table-active\"><td>Active</td><td>{{.Active}}</td></tr><tr class=\"table-success\"><td>Cured</td><td>{{.LiveExit}}</td></tr><tr class=\"table-danger\"><td>Death</td><td>{{.Death}}</td></tr></table>",
+                                    'html-mode': true,
+                                    backgroundColor: 'white',
+                                    borderWidth: '0px',
+                                    padding: '2px'
+                                },
+                                backgroundColor: {{.Color}}
+                            },
+                            {{ end }}
+                            {{ end }}
+                        },
+                        label: { // text displaying. Like valueBox
+                            fontSize: '12px',
+                            visible: false
+                        }
+                    },
+                    zooming: true // turn of zooming. Doesn't work with bounding box,
+                }
+            },
+            {
+                type: 'rectangle',
+                height: '10px',
+                width: '30px',
+                id: '1',
+                backgroundColor: '#174ea6',
+                cursor: 'pointer',
+                label: {
+                    text: '400+',
+                    fontColor: '#000',
+                    fontSize: '9px',
+                    offsetX: '-30px',
+                    offsetY: '1px'
+                },
+                size: '10px',
+                x: '90%',
+                y: '5%'
+            },
+            {
+                type: 'rectangle',
+                height: '10px',
+                width: '30px',
+                id: '2',
+                backgroundColor: '#2558a9',
+                cursor: 'pointer',
+                label: {
+                    text: '300-400',
+                    fontColor: '#000',
+                    fontSize: '9px',
+                    offsetX: '-40px',
+                    offsetY: '1px'
+                },
+                size: '10px',
+                x: '90%',
+                y: '8%'
+            },
+            {
+                type: 'rectangle',
+                height: '10px',
+                width: '30px',
+                id: '3',
+                backgroundColor: '#406cb1',
+                cursor: 'pointer',
+                label: {
+                    text: '200-300',
+                    fontColor: '#000',
+                    fontSize: '9px',
+                    offsetX: '-40px',
+                    offsetY: '1px'
+                },
+                size: '10px',
+                x: '90%',
+                y: '11%'
+            },
+            {
+                type: 'rectangle',
+                height: '10px',
+                width: '30px',
+                id: '4',
+                backgroundColor: '#5c7bad',
+                cursor: 'pointer',
+                label: {
+                    text: '150-199',
+                    fontColor: '#000',
+                    fontSize: '9px',
+                    offsetX: '-40px',
+                    offsetY: '1px'
+                },
+                size: '10px',
+                x: '90%',
+                y: '14%'
+            },
+            {
+                type: 'rectangle',
+                height: '10px',
+                width: '30px',
+                id: '5',
+                backgroundColor: '#8ba2c7',
+                cursor: 'pointer',
+                label: {
+                    text: '100-149',
+                    fontColor: '#000',
+                    fontSize: '9px',
+                    offsetX: '-40px',
+                    offsetY: '1px'
+                },
+                size: '10px',
+                x: '90%',
+                y: '17%'
+            },
+            {
+                type: 'rectangle',
+                height: '10px',
+                width: '30px',
+                id: '6',
+                backgroundColor: '#bcc9de',
+                cursor: 'pointer',
+                label: {
+                    text: '50-99',
+                    fontColor: '#000',
+                    fontSize: '9px',
+                    offsetX: '-35px',
+                    offsetY: '1px'
+                },
+                size: '10px',
+                x: '90%',
+                y: '20%'
+            },
+            {
+                type: 'rectangle',
+                height: '10px',
+                width: '30px',
+                id: '7',
+                backgroundColor: '#dee2ea',
+                cursor: 'pointer',
+                label: {
+                    text: '0-49',
+                    fontColor: '#000',
+                    fontSize: '9px',
+                    offsetX: '-32px',
+                    offsetY: '1px'
+                },
+                size: '10px',
+                x: '90%',
+                y: '23%'
+            }
+        ]
+    };
+    zingchart.loadModules('maps,maps-ind');
+    zingchart.render({
+        id: 'india-map',
+        data: chartConfig,
+        height: '100%',
+        width: '100%',
+    });
+</script>

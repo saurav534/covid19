@@ -16,11 +16,12 @@ func main() {
 		context.HTML(
 			// Set the HTTP status to 200 (OK)
 			http.StatusOK,
-			// Use the index.html template
+			// Use the moh.html template
 			"crowdsource.html",
 			// Pass the data that the page uses (in this case, 'title')
 			gin.H{
 				"title": "COVID-19",
+				"nextTab" : "/moh",
 				"data" : coronaUpdate,
 			},
 		)
@@ -34,11 +35,12 @@ func main() {
 		context.HTML(
 			// Set the HTTP status to 200 (OK)
 			http.StatusOK,
-			// Use the index.html template
-			"index.html",
+			// Use the moh.html template
+			"moh.html",
 			// Pass the data that the page uses (in this case, 'title')
 			gin.H{
 				"title": "COVID-19",
+				"nextTab" : "/",
 				"data" : coronaUpdate,
 			},
 		)

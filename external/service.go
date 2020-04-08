@@ -31,6 +31,11 @@ func LiveData() *common.CoronaUpdate {
 		return data
 	}
 
+	newsChan := make(chan *common.News)
+	go func() {
+		latestNews(newsChan)
+	}()
+
 	constantBackoff := backoff.NewConstantBackOff(500 * time.Millisecond)
 	var resp *http.Response
 	var err error
@@ -72,6 +77,7 @@ func LiveData() *common.CoronaUpdate {
 		update.FatalPercent = "0"
 		update.LivePercent = "0"
 	}
+	update.News = <-newsChan
 
 	// updating cache time
 	updateTime = millisNow
@@ -118,6 +124,11 @@ func CrowdData() *common.CoronaUpdate {
 	bytes, _ := ioutil.ReadAll(resp.Body)
 	cs := &common.CrowdSource{}
 	_ = json.Unmarshal(bytes, cs)
+
+	newsChan := make(chan *common.News)
+	go func() {
+		latestNews(newsChan)
+	}()
 
 	// set time series data
 	covidDeltaChan := make(chan *common.CovidDelta)
@@ -232,12 +243,38 @@ func CrowdData() *common.CoronaUpdate {
 		update.Faq = data.Faq
 		update.Links = data.Links
 	}
+	update.News = <-newsChan
 
 	// updating cache time
 	crowdUpdateTime = millisNow
 	crowdData = update
 
 	return update
+}
+
+func latestNews(newsChannel chan <- *common.News) {
+	defer close(newsChannel)
+	constantBackoff := backoff.NewConstantBackOff(500 * time.Millisecond)
+	var resp *http.Response
+	var err error
+	err = backoff.Retry(func() error {
+		resp, err = http.Get("http://newsapi.org/v2/top-headlines?country=in&q=corona&apiKey=cd3cace91bf849509f00076f46c7f62e")
+		log.Printf("News headline response recieved")
+		return err
+	}, backoff.WithMaxRetries(constantBackoff, 4))
+
+	news := common.News{}
+	if err != nil {
+		log.Printf("error while calling to news headline service, %v", err)
+		newsChannel <- &news
+	}
+
+	bytes, _ := ioutil.ReadAll(resp.Body)
+	err = json.Unmarshal(bytes, &news)
+	if err != nil {
+		log.Printf("error happend %v", err)
+	}
+	newsChannel <- &news
 }
 
 func crowdDistrictData(dataChannel chan<- map[string]*common.StateDistrict) {
@@ -251,13 +288,12 @@ func crowdDistrictData(dataChannel chan<- map[string]*common.StateDistrict) {
 		return err
 	}, backoff.WithMaxRetries(constantBackoff, 4))
 
+	dd := make(map[string]*common.StateDistrict)
 	if err != nil {
 		log.Printf("error while calling to crowd district data service, %v", err)
-		dataChannel <- nil
+		dataChannel <- dd
 	}
-
 	bytes, _ := ioutil.ReadAll(resp.Body)
-	dd := make(map[string]*common.StateDistrict)
 	err = json.Unmarshal(bytes, &dd)
 	if err != nil {
 		log.Printf("error happend %v", err)

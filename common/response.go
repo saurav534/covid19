@@ -23,6 +23,7 @@ type CoronaUpdate struct {
 	Links             []string
 	SeriesDelta       *CovidDelta
 	Tested            *CoronaTest
+	News              *News
 }
 
 type CoronaTest struct {
@@ -45,7 +46,6 @@ type StateData struct {
 	LivePercent  string
 	Delta        *Delta
 	District     []*CovidDistrict
-
 }
 
 type CovidDelta struct {
