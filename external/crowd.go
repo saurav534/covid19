@@ -16,18 +16,14 @@ import (
 	"time"
 )
 
-var crowdUpdateTime int64
 var crowdData *common.CoronaUpdate
 
-func CrowdData() *common.CoronaUpdate {
-	millisNow := time.Now().UnixNano() / 1000000
-	diff := (millisNow - crowdUpdateTime) / (60 * 1000)
+func GetCrowdData() *common.CoronaUpdate {
+	return crowdData
+}
 
-	if diff <= 5 && crowdData != nil {
-		log.Printf("Crowd data from cache found %v", diff)
-		return crowdData
-	}
-
+func UpdateCrowdData() {
+	log.Printf("updating crowd Data starting at: %v", time.Now().Format("02 Jan, 03:04:05 PM"))
 	dataChannel := make(chan map[string]*common.StateDistrict)
 	go func() {
 		crowdDistrictData(dataChannel)
@@ -38,7 +34,7 @@ func CrowdData() *common.CoronaUpdate {
 	var err error
 	err = backoff.Retry(func() error {
 		resp, err = http.Get("https://api.covid19india.org/data.json")
-		log.Printf("Complete data response recieved")
+		log.Printf("Complete crowd data response recieved")
 		return err
 	}, backoff.WithMaxRetries(constantBackoff, 4))
 
@@ -50,8 +46,7 @@ func CrowdData() *common.CoronaUpdate {
 		Links:     links,
 	}
 	if err != nil {
-		log.Printf("error while calling to crowd data service, %v", err)
-		return update
+		log.Printf("Error while updating crowd data, %v", err)
 	}
 
 	bytes, _ := ioutil.ReadAll(resp.Body)
@@ -170,21 +165,17 @@ func CrowdData() *common.CoronaUpdate {
 	update.Tested = <-coronaTestChan
 	update.Tested.ConfirmRate = getConfirmRate(update)
 
-	if data != nil {
-		update.Facebook = data.Facebook
-		update.Youtube = data.Youtube
-		update.Twitter = data.Twitter
-		update.HelpLine = data.HelpLine
-		update.Faq = data.Faq
-		update.Links = data.Links
+	if mohData != nil {
+		update.Facebook = mohData.Facebook
+		update.Youtube = mohData.Youtube
+		update.Twitter = mohData.Twitter
+		update.HelpLine = mohData.HelpLine
+		update.Faq = mohData.Faq
+		update.Links = mohData.Links
 	}
 	update.News = <-newsChan
-
-	// updating cache time
-	crowdUpdateTime = millisNow
 	crowdData = update
-
-	return update
+	log.Printf("updating crowd data done at: %v", time.Now().Format("02 Jan, 03:04:05 PM"))
 }
 
 func getConfirmRate(update *common.CoronaUpdate) []float32 {

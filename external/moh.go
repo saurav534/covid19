@@ -14,18 +14,14 @@ import (
 	"time"
 )
 
-var updateTime int64
-var data *common.CoronaUpdate
+var mohData *common.CoronaUpdate
 
-func LiveData() *common.CoronaUpdate {
-	millisNow := time.Now().UnixNano() / 1000000
-	diff := (millisNow - updateTime) / (60 * 1000)
+func GetMohData() *common.CoronaUpdate {
+	return mohData
+}
 
-	if diff <= 5 && data != nil {
-		log.Printf("MOH data from cache found %v", diff)
-		return data
-	}
-
+func UpdateMohData() {
+	log.Printf("updating moh data starting at: %v", time.Now().Format("02 Jan, 03:04:05 PM"))
 	newsChan := make(chan *common.News)
 	go func() {
 		latestNews(newsChan)
@@ -48,8 +44,7 @@ func LiveData() *common.CoronaUpdate {
 		Links:     links,
 	}
 	if err != nil {
-		log.Printf("error while calling to gov service, %v", err)
-		return update
+		log.Printf("Error while updating moh data, %v", err)
 	}
 
 	node, _ := html.Parse(resp.Body)
@@ -74,11 +69,8 @@ func LiveData() *common.CoronaUpdate {
 	}
 	update.News = <-newsChan
 
-	// updating cache time
-	updateTime = millisNow
-	data = update
-
-	return update
+	mohData = update
+	log.Printf("updating crowd data done at: %v", time.Now().Format("02 Jan, 03:04:05 PM"))
 }
 
 func parseNode(node *html.Node, update *common.CoronaUpdate, linkMap map[string]bool) {
