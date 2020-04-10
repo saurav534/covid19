@@ -18,8 +18,8 @@ func NewCron() *Cron {
 func (c *Cron) StartCron() {
 	go func() {
 		tickers := make([]*time.Ticker, 0)
-		t1 := time.NewTicker(10 * time.Second)
-		t2 := time.NewTicker(12 * time.Second)
+		t1 := time.NewTicker(309 * time.Second)
+		t2 := time.NewTicker(327 * time.Second)
 		tickers = append(tickers, t1, t2)
 		for {
 			select {
