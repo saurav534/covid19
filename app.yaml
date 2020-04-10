@@ -1,1 +1,4 @@
 runtime: go113
+env_variables:
+  GIN_MODE: "release"
+  PORT: 9090
