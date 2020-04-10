@@ -63,9 +63,14 @@ func main() {
 	}()
 	stopSignal := watchStopSignal()
 
+	var port string
+	port = os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 	// starting server
 	srv = &http.Server{
-		Addr:    ":9090",
+		Addr:    ":" + port,
 		Handler: engine,
 	}
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
