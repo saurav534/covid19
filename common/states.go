@@ -37,44 +37,47 @@ func init() {
 		"mizoram" : "MZ",
 		"arunachal pradesh" : "AR",
 		"tripura": "TR",
+		"sikkim": "SK",
+		"meghalaya": "ML",
+		"nagaland": "NL",
 	}
 }
 
 func GetInfectColor(cnf int32) string{
-	if cnf >= 800 {
+	if cnf > 800 {
 		return "#8b0000"
 	}
-	if cnf >= 700 {
+	if cnf > 700 {
 		return "#960f0f"
 	}
-	if cnf >= 600 {
+	if cnf > 600 {
 		return "#a01e1e"
 	}
-	if cnf >= 500 {
+	if cnf > 500 {
 		return "#a92929"
 	}
-	if cnf >= 400 {
+	if cnf > 400 {
 		return "#b33c3c"
 	}
-	if cnf >= 350 {
+	if cnf > 350 {
 		return "#bb4d4d"
 	}
-	if cnf >= 200 {
+	if cnf > 200 {
 		return "#bf5b5b"
 	}
-	if cnf >= 150 {
+	if cnf > 150 {
 		return "#c76b6b"
 	}
-	if cnf >= 100 {
+	if cnf > 100 {
 		return "#d07c7c"
 	}
-	if cnf >= 75 {
+	if cnf > 75 {
 		return "#d48787"
 	}
-	if cnf >=50 {
+	if cnf >50 {
 		return "#d89696"
 	}
-	if cnf >=25 {
+	if cnf >25 {
 		return "#dca1a1"
 	}
 	if cnf >0 {

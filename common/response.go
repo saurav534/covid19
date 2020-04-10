@@ -29,6 +29,7 @@ type CoronaUpdate struct {
 type CoronaTest struct {
 	Date        []string
 	TotalSample []int
+	ConfirmRate []float32
 }
 
 type StateData struct {
@@ -49,8 +50,9 @@ type StateData struct {
 }
 
 type CovidDelta struct {
-	Dates     []string
-	Confirmed []string
-	Cured     []string
-	Death     []string
+	Dates           []string
+	Confirmed       []string
+	Cured           []string
+	Death           []string
+	DateToConfirmed map[string]int
 }
