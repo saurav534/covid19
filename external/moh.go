@@ -68,7 +68,7 @@ func UpdateMohData() {
 		update.LivePercent = "0"
 	}
 	update.News = <-newsChan
-
+	sortStates(update.StateWise)
 	mohData = update
 	log.Printf("updating crowd data done at: %v", time.Now().Format("02 Jan, 03:04:05 PM"))
 }

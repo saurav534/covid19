@@ -174,6 +174,7 @@ func UpdateCrowdData() {
 		update.Links = mohData.Links
 	}
 	update.News = <-newsChan
+	sortStates(update.StateWise)
 	crowdData = update
 	log.Printf("updating crowd data done at: %v", time.Now().Format("02 Jan, 03:04:05 PM"))
 }
