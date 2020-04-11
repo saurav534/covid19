@@ -184,6 +184,10 @@ func getConfirmRate(update *common.CoronaUpdate) []float32 {
 	confirmRate := make([]float32, 0)
 	for i, d := range update.Tested.Date {
 		c := dc[d]
+		if i == len(update.Tested.Date) - 1 && c == 0 {
+			newConfirmed, _ := strconv.Atoi(update.Delta.Confirmed)
+			c = newConfirmed
+		}
 		rate := (float32(c) * 100.0) / float32(update.Tested.TotalSample[i])
 		confirmRate = append(confirmRate, float32(math.Round(float64(rate)*100)/100))
 	}
