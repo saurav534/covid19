@@ -39,7 +39,10 @@
                     ticks: {
                         autoSkip: true,
                         maxTicksLimit: 8,
-                        fontColor: 'rgb(133,88,255)'
+                        fontColor: 'rgb(133,88,255)',
+                        callback: function(value, index, values) {
+                            return value/1000 + "k";
+                        }
                     }
                 }, {
                     display: true,
@@ -58,7 +61,7 @@
             },
             layout: {
                 padding: {
-                    left: -7,
+                    left: -5,
                     right: -5
                 }
             },
@@ -122,6 +125,11 @@
                 mode: 'index',
                 intersect: false,
                 bodyFontSize: 10
+            },
+            layout: {
+                padding: {
+                    left: -7
+                }
             },
             hover: {
                 mode: 'nearest',

@@ -36,7 +36,7 @@
 <div class="container">
     <div style="font-size: 18px; margin-bottom: 10px">Pan India Status</div>
     <div class="row align-items-center">
-        <div class="col-12 col-sm-6">
+        <div class="col-12 col-md-6">
             <div class="table-responsive">
                 <table class="table table-hover table-sm font-weight-light">
                     <tr class="table-warning">
@@ -74,20 +74,20 @@
                 </table>
             </div>
         </div>
-        <div class="col-12 offset-sm-1 col-sm-4" style="padding: 0">
+        <div class="col-12 col-md-6" style="padding: 0">
             <div id="india-map" class="chart--container"></div>
         </div>
     </div>
 </div>
 <div class="container">
     <div class="row align-items-center">
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-6 col-lg-4">
             <canvas id="covid-delta" width="400" height="300"></canvas>
         </div>
-        <div class="col-12 col-md-4 top-on-mobile">
+        <div class="col-12 col-md-6 col-lg-4 top-on-mobile">
             <canvas id="covid-test" width="400" height="300"></canvas>
         </div>
-        <div class="col-12 col-md-4 top-on-mobile">
+        <div class="col-12 col-md-6 col-lg-4 top-on-mobile">
             <canvas id="closed-cases" width="400" height="250"></canvas>
         </div>
     </div>
@@ -106,8 +106,8 @@
     <div class="row" id="all-state" style="margin-top: 15px">
         {{ with .data.StateWise }}
             {{ range . }}
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="state-card card text-white bg-secondary mb-3 font-weight-light" state="{{.Name}}">
+                <div class="col-12 col-md-6 col-lg-4 state-card" state="{{.Name}}">
+                    <div class="card text-white bg-secondary mb-3 font-weight-light">
                         <div class="card-header font-weight-normal">
                             <span>{{.Name}}</span>
                             <span class="badge float-right font-weight-light"

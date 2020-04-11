@@ -1,6 +1,15 @@
 <!--baseheader.html-->
 
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-163374421-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-163374421-1');
+    </script>
     <!--Use the title variable to set the title of the page-->
     <title>{{ .title }}</title>
     <meta charset="utf-8">
@@ -38,7 +47,7 @@
             padding: .55rem 0.8rem;
         }
 
-        .state-card.bg-secondary {
+        .state-card .bg-secondary {
             background: #476c8e !important
         }
 
