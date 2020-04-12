@@ -38,12 +38,19 @@ func UpdateCrowdData() {
 		return err
 	}, backoff.WithMaxRetries(constantBackoff, 4))
 
-	stateData := make([]*common.StateData, 0)
-	links := make([]string, 0)
+	// init insight
+	insights := make(map[string]string)
+	insights[common.IK_HIGHEST_CONFIRMED_NUMBER] = "0"
+	insights[common.IK_HIGHEST_CURED_NUMBER] = "0"
+	insights[common.IK_HIGHEST_FATAL_NUMBER] = "0"
+	insights[common.IK_HIGHEST_PI_CONFIRMED_NUMBER] = "0"
+	insights[common.IK_HIGHEST_PI_CURED_NUMBER] = "0"
+	insights[common.IK_HIGHEST_PI_FATAL_NUMBER] = "0"
 
 	update := &common.CoronaUpdate{
-		StateWise: stateData,
-		Links:     links,
+		StateWise: make([]*common.StateData, 0),
+		Links:     make([]string, 0),
+		Insights:  insights,
 	}
 	if err != nil {
 		log.Printf("Error while updating crowd data, %v", err)
@@ -64,6 +71,10 @@ func UpdateCrowdData() {
 		seriesDelta(covidDeltaChan, cs.CasesTimeSeries)
 	}()
 
+	for _, cts := range cs.CasesTimeSeries {
+		updateInsights(common.IT_COUNTRY, nil, cts, update.Insights)
+	}
+
 	// set covid test data
 	tests := cs.Tested
 	coronaTestChan := make(chan *common.CoronaTest)
@@ -79,85 +90,15 @@ func UpdateCrowdData() {
 	}
 
 	// parse district data first
-	stataDistrictData := <-dataChannel
-	stateToDistrictList := make(map[string][]*common.CovidDistrict)
-
-	for _, value := range reflect.ValueOf(stataDistrictData).MapKeys() {
-		if value.String() == "Unkown" {
-			continue
-		}
-		stateDistricts := stataDistrictData[value.String()]
-		districts := stateDistricts.DistrictData
-		covidDistrict := make([]*common.CovidDistrict, 0)
-		for _, val := range reflect.ValueOf(districts).MapKeys() {
-			districtData := districts[val.String()]
-			covidDistrict = append(covidDistrict, &common.CovidDistrict{
-				Name:            val.String(),
-				Confirmed:       districtData.Confirmed,
-				Lastupdatedtime: districtData.Lastupdatedtime,
-				Delta: common.Delta{
-					Confirmed: strconv.Itoa(districtData.Delta.Confirmed),
-				},
-			})
-		}
-		sort.Slice(covidDistrict, func(i, j int) bool {
-			return covidDistrict[i].Confirmed > covidDistrict[j].Confirmed
-		})
-		stateToDistrictList[value.String()] = covidDistrict
-	}
+	stateDistrictData := <-dataChannel
+	stateToDistrictList := toStateToDistrictList(stateDistrictData)
 
 	for _, data := range cs.Statewise {
 		if data.State == "Total" {
-			update.Total = data.Confirmed
-			update.Active = data.Active
-			update.Cured = data.Recovered
-			update.Death = data.Deaths
-			update.Delta = &common.Delta{
-				Confirmed: data.Deltaconfirmed,
-				Deaths:    data.Deltadeaths,
-				Recovered: data.Deltarecovered,
-			}
-			updateTime, _ := time.Parse("02/01/2006 15:04:05", data.Lastupdatedtime)
-			update.UpdateTime = updateTime.Format("02 Jan, 03:04 PM")
-			cured := toInt(data.Recovered)
-			death := toInt(data.Deaths)
-			closed := cured + death
-			update.Closed = strconv.Itoa(closed)
-			if closed != 0 {
-				update.FatalPercent = fmt.Sprintf("%.2f", (float32(death*100))/float32(closed))
-				update.LivePercent = fmt.Sprintf("%.2f", (float32((cured)*100))/float32(closed))
-			} else {
-				update.FatalPercent = "0"
-				update.LivePercent = "0"
-			}
+			setPanIndiaData(update, data)
 		} else if data.Confirmed != "0" {
-			st := &common.StateData{}
-			st.Death = data.Deaths
-			st.Total = data.Confirmed
-			st.Active = data.Active
-			st.LiveExit = data.Recovered
-			st.Name = data.State
-			st.Delta = &common.Delta{
-				Confirmed: data.Deltaconfirmed,
-				Deaths:    data.Deltadeaths,
-				Recovered: data.Deltarecovered,
-			}
-			st.Code = common.StateCode[strings.ToLower(st.Name)]
-			st.Color = common.GetInfectColor(int32(toInt(st.Total)))
-			st.Display = st.Name + " - " + st.Total
-			st.Id = strings.ReplaceAll(st.Name, " ", "-")
-			st.District = stateToDistrictList[st.Name]
-			cured := toInt(data.Recovered)
-			death := toInt(data.Deaths)
-			closed := cured + death
-			st.Closed = strconv.Itoa(closed)
-			if closed != 0 {
-				st.FatalPercent = fmt.Sprint(math.Round((float64(death*100))/float64(closed))) + "%"
-				st.LivePercent = fmt.Sprint(math.Round((float64((cured)*100))/float64(closed))) + "%"
-			} else {
-				st.FatalPercent = "NA"
-				st.LivePercent = "NA"
-			}
+			st := getPerStateData(data, stateToDistrictList)
+			updateInsights(common.IT_STATE, data, nil, update.Insights)
 			update.StateWise = append(update.StateWise, st)
 		}
 	}
@@ -177,6 +118,137 @@ func UpdateCrowdData() {
 	sortStates(update.StateWise)
 	crowdData = update
 	log.Printf("updating crowd data done at: %v", time.Now().Format("02 Jan, 03:04:05 PM"))
+}
+
+func toStateToDistrictList(stateDistrictData map[string]*common.StateDistrict) map[string][]*common.CovidDistrict {
+	stateToDistrictList := make(map[string][]*common.CovidDistrict)
+	for _, value := range reflect.ValueOf(stateDistrictData).MapKeys() {
+		if value.String() == "Unkown" {
+			continue
+		}
+		stateDistricts := stateDistrictData[value.String()]
+		districts := stateDistricts.DistrictData
+		covidDistrict := make([]*common.CovidDistrict, 0)
+		for _, val := range reflect.ValueOf(districts).MapKeys() {
+			districtData := districts[val.String()]
+			covidDistrict = append(covidDistrict, &common.CovidDistrict{
+				Name:            val.String(),
+				Confirmed:       districtData.Confirmed,
+				Lastupdatedtime: districtData.Lastupdatedtime,
+				Delta: common.Delta{
+					Confirmed: strconv.Itoa(districtData.Delta.Confirmed),
+				},
+			})
+		}
+		sort.Slice(covidDistrict, func(i, j int) bool {
+			return covidDistrict[i].Confirmed > covidDistrict[j].Confirmed
+		})
+		stateToDistrictList[value.String()] = covidDistrict
+	}
+	return stateToDistrictList
+}
+
+func getPerStateData(data *common.Statewise, stateToDistrictList map[string][]*common.CovidDistrict) *common.StateData {
+	st := &common.StateData{}
+	st.Death = data.Deaths
+	st.Total = data.Confirmed
+	st.Active = data.Active
+	st.LiveExit = data.Recovered
+	st.Name = data.State
+	st.Delta = &common.Delta{
+		Confirmed: data.Deltaconfirmed,
+		Deaths:    data.Deltadeaths,
+		Recovered: data.Deltarecovered,
+	}
+	st.Code = common.StateCode[strings.ToLower(st.Name)]
+	st.Color = common.GetInfectColor(int32(toInt(st.Total)))
+	st.Display = st.Name + " - " + st.Total
+	st.Id = strings.ReplaceAll(st.Name, " ", "-")
+	st.District = stateToDistrictList[st.Name]
+	cured := toInt(data.Recovered)
+	death := toInt(data.Deaths)
+	closed := cured + death
+	st.Closed = strconv.Itoa(closed)
+	if closed != 0 {
+		st.FatalPercent = fmt.Sprint(math.Round((float64(death*100))/float64(closed))) + "%"
+		st.LivePercent = fmt.Sprint(math.Round((float64((cured)*100))/float64(closed))) + "%"
+	} else {
+		st.FatalPercent = "NA"
+		st.LivePercent = "NA"
+	}
+	return st
+}
+
+func updateInsights(it common.InsightType, data *common.Statewise, cdata *common.CasesTimeSeries, insights map[string]string) {
+	if common.IT_STATE == it {
+		hc, _ := strconv.Atoi(insights[common.IK_HIGHEST_CONFIRMED_NUMBER])
+		hd, _ := strconv.Atoi(insights[common.IK_HIGHEST_CURED_NUMBER])
+		hf, _ := strconv.Atoi(insights[common.IK_HIGHEST_FATAL_NUMBER])
+
+		nhc, _ := strconv.Atoi(data.Confirmed)
+		nhd, _ := strconv.Atoi(data.Recovered)
+		nhf, _ := strconv.Atoi(data.Deaths)
+
+		if nhc > hc {
+			insights[common.IK_HIGHEST_CONFIRMED_STATE] = data.State
+			insights[common.IK_HIGHEST_CONFIRMED_NUMBER] = data.Confirmed
+		}
+		if nhd > hd {
+			insights[common.IK_HIGHEST_CURED_STATE] = data.State
+			insights[common.IK_HIGHEST_CURED_NUMBER] = data.Recovered
+		}
+		if nhf > hf {
+			insights[common.IK_HIGHEST_FATAL_STATE] = data.State
+			insights[common.IK_HIGHEST_FATAL_NUMBER] = data.Deaths
+		}
+	}
+	if common.IT_COUNTRY == it {
+		hc, _ := strconv.Atoi(insights[common.IK_HIGHEST_PI_CONFIRMED_NUMBER])
+		hd, _ := strconv.Atoi(insights[common.IK_HIGHEST_PI_CURED_NUMBER])
+		hf, _ := strconv.Atoi(insights[common.IK_HIGHEST_PI_FATAL_NUMBER])
+
+		nhc, _ := strconv.Atoi(cdata.Dailyconfirmed)
+		nhd, _ := strconv.Atoi(cdata.Dailyrecovered)
+		nhf, _ := strconv.Atoi(cdata.Dailydeceased)
+
+		if nhc > hc {
+			insights[common.IK_HIGHEST_PI_CONFIRMED_DATE] = cdata.Date[:6]
+			insights[common.IK_HIGHEST_PI_CONFIRMED_NUMBER] = cdata.Dailyconfirmed
+		}
+		if nhd > hd {
+			insights[common.IK_HIGHEST_PI_CURED_DATE] = cdata.Date[:6]
+			insights[common.IK_HIGHEST_PI_CURED_NUMBER] = cdata.Dailyrecovered
+		}
+		if nhf > hf {
+			insights[common.IK_HIGHEST_PI_FATAL_DATE] = cdata.Date[:6]
+			insights[common.IK_HIGHEST_PI_FATAL_NUMBER] = cdata.Dailydeceased
+		}
+	}
+}
+
+func setPanIndiaData(update *common.CoronaUpdate, data *common.Statewise) {
+	update.Total = data.Confirmed
+	update.Active = data.Active
+	update.Cured = data.Recovered
+	update.Death = data.Deaths
+	update.Delta = &common.Delta{
+		Confirmed: data.Deltaconfirmed,
+		Deaths:    data.Deltadeaths,
+		Recovered: data.Deltarecovered,
+	}
+	updateTime, _ := time.Parse("02/01/2006 15:04:05", data.Lastupdatedtime)
+	update.UpdateTime = updateTime.Format("02 Jan, 03:04 PM")
+	cured := toInt(data.Recovered)
+	death := toInt(data.Deaths)
+	closed := cured + death
+	update.Closed = strconv.Itoa(closed)
+	if closed != 0 {
+		update.FatalPercent = fmt.Sprintf("%.2f", (float32(death*100))/float32(closed))
+		update.LivePercent = fmt.Sprintf("%.2f", (float32((cured)*100))/float32(closed))
+	} else {
+		update.FatalPercent = "0"
+		update.LivePercent = "0"
+	}
 }
 
 func getConfirmRate(update *common.CoronaUpdate) []float32 {
@@ -243,7 +315,7 @@ func crowdDistrictData(dataChannel chan<- map[string]*common.StateDistrict) {
 	dataChannel <- dd
 }
 
-func seriesDelta(seriesChan chan<- *common.CovidDelta, seriesData []common.CasesTimeSeries) {
+func seriesDelta(seriesChan chan<- *common.CovidDelta, seriesData []*common.CasesTimeSeries) {
 	defer close(seriesChan)
 	l := len(seriesData)
 	dates := make([]string, 0)
@@ -275,7 +347,7 @@ func seriesDelta(seriesChan chan<- *common.CovidDelta, seriesData []common.Cases
 	}
 }
 
-func coronaTested(covidTestChan chan<- *common.CoronaTest, tested []common.Tested) {
+func coronaTested(covidTestChan chan<- *common.CoronaTest, tested []*common.Tested) {
 	defer close(covidTestChan)
 	testMap := make(map[string]int)
 	testMapRev := make(map[int]string)

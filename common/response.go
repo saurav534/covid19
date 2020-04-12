@@ -24,6 +24,7 @@ type CoronaUpdate struct {
 	SeriesDelta       *CovidDelta
 	Tested            *CoronaTest
 	News              *News
+	Insights          map[string]string
 }
 
 type CoronaTest struct {

@@ -1,9 +1,9 @@
 package common
 
 type CrowdSource struct {
-	CasesTimeSeries []CasesTimeSeries `json:"cases_time_series"`
-	Statewise       []Statewise       `json:"statewise"`
-	Tested          []Tested          `json:"tested"`
+	CasesTimeSeries []*CasesTimeSeries `json:"cases_time_series"`
+	Statewise       []*Statewise       `json:"statewise"`
+	Tested          []*Tested          `json:"tested"`
 }
 type CasesTimeSeries struct {
 	Dailyconfirmed string `json:"dailyconfirmed"`
