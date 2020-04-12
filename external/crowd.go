@@ -184,7 +184,7 @@ func getConfirmRate(update *common.CoronaUpdate) []float32 {
 	confirmRate := make([]float32, 0)
 	for i, d := range update.Tested.Date {
 		c := dc[d]
-		if i == len(update.Tested.Date) - 1 && c == 0 {
+		if i == len(update.Tested.Date)-1 && c == 0 {
 			newConfirmed, _ := strconv.Atoi(update.Delta.Confirmed)
 			c = newConfirmed
 		}
@@ -251,7 +251,10 @@ func seriesDelta(seriesChan chan<- *common.CovidDelta, seriesData []common.Cases
 	cured := make([]string, 0)
 	death := make([]string, 0)
 	dateToConfirmed := make(map[string]int)
-
+	dateToday := time.Now().Format("02 Jan")
+	if strings.Contains(seriesData[l-1].Date, dateToday) {
+		l = l - 1
+	}
 	for i := l - 21; i < l; i++ {
 		data := seriesData[i]
 		dateString := data.Date[:6]
