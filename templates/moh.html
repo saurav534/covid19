@@ -16,6 +16,7 @@
                aria-haspopup="true" aria-expanded="false" style="padding-left: 0; padding-right: 0">
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="left: auto; right: -10px">
+                <a class="dropdown-item" href="#news-detailed">COVID-19 News</a>
                 <a class="dropdown-item" href="#state-wise">State Wise Status</a>
                 <a class="dropdown-item" href="#donate-pm-cares">Donate to PM-CARES</a>
             </div>
@@ -73,6 +74,37 @@
         </div>
         <div class="col-12 col-md-6" style="padding: 0">
             <div id="india-map" class="chart--container"></div>
+        </div>
+    </div>
+</div>
+<div id="news-detailed" class="container">
+    <div class="column">
+        <div class="col-12 col-sm-9 col-md-7 col-lg-5" style="font-size: 14px; font-weight: 600; margin-bottom: 10px; text-align: center">COVID-19 News</div>
+        <div class="col-12 col-sm-9 col-md-7 col-lg-5">
+            <div id="news-carousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    {{ range $index, $elem := .data.News.Articles}}
+                        <div class="carousel-item {{if eq $index 0}}active{{end}}">
+                            <div class="card bg-light" style="width: 100%; margin: auto">
+                                <img src="{{$elem.URLToImage}}" class="card-img-top" alt="News Image" height="230px">
+                                <div class="card-body">
+                                    <div class="card-title">{{$elem.Title}}</div>
+                                    <p class="card-text">{{$elem.Description}}</p>
+                                    <a href="{{$elem.URL}}" class="card-link">Read More</a>
+                                </div>
+                            </div>
+                        </div>
+                    {{ end }}
+                </div>
+                <a class="carousel-control-prev" href="#news-carousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#news-carousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
         </div>
     </div>
 </div>
