@@ -37,97 +37,97 @@
     <div class="row align-items-center">
         <div class="col-12 col-md-6">
             <div class="column">
-                <div>
-                    <div style="font-size: 18px; margin-bottom: 10px">Pan India Status</div>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm font-weight-light">
-                            <tr class="table-warning">
-                                <td>Total Cases</td>
-                                <td>{{.data.Total}}
-                                    {{if ne .data.Delta.Confirmed "0"}}
-                                        <span style="color: darkred; font-size: 11px"> [+{{.data.Delta.Confirmed}}]</span>
-                                    {{ end }}
-                                </td>
-                            </tr>
-                            <tr class="table-active">
-                                <td>Active COVID 2019 cases</td>
-                                <td>{{.data.Active}}</td>
-                            </tr>
-                            <tr class="table-success">
-                                <td>Cured/discharged cases</td>
-                                <td>{{.data.Cured}}
-                                    {{if ne .data.Delta.Recovered "0"}}
-                                        <span style="color: darkgreen; font-size: 11px"> [+{{.data.Delta.Recovered}}]</span>
-                                    {{ end }}
-                                </td>
-                            </tr>
-                            <tr class="table-danger">
-                                <td>Death</td>
-                                <td>{{.data.Death}}
-                                    {{if ne .data.Delta.Deaths "0"}}
-                                        <span style="color: #484848; font-size: 11px"> [+{{.data.Delta.Deaths}}]</span>
-                                    {{ end }}
-                                </td>
-                            </tr>
-                            <tr class="table-info">
-                                <td>Samples Tested</td>
-                                <td>{{.data.SampleTested}}</td>
-                            </tr>
-                        </table>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="column small-card" style="background: #ffeeba;">
+                            <div class="heading">Total</div>
+                            <div class="content">{{.data.Total}}
+                                {{if ne .data.Delta.Confirmed "0"}}
+                                    <span style="color: darkred; font-size: 10px"> [+{{.data.Delta.Confirmed}}]</span>
+                                {{ end }}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="column small-card" style="background: #dadada;">
+                            <div class="heading">Active</div>
+                            <div class="content">{{.data.Active}}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="column small-card" style="background: #c3e6cb;">
+                            <div class="heading">Cured</div>
+                            <div class="content">{{.data.Cured}}
+                                {{if ne .data.Delta.Recovered "0"}}
+                                    <span style="color: darkgreen; font-size: 10px"> [+{{.data.Delta.Recovered}}]</span>
+                                {{ end }}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="column small-card" style="background: #f5c6cb;">
+                            <div class="heading">Fatal</div>
+                            <div class="content">{{.data.Death}}
+                                {{if ne .data.Delta.Deaths "0"}}
+                                    <span style="color: #484848; font-size: 10px"> [+{{.data.Delta.Deaths}}]</span>
+                                {{ end }}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="column small-card" style="background: #bfe5eb;">
+                            <div class="heading">Tested</div>
+                            <div class="content">{{.data.SampleTested}}</div>
+                        </div>
                     </div>
                 </div>
                 <br class="d-none d-md-block">
                 <div class="d-none d-md-block">
-                    <div style="font-size: 18px; margin-bottom: 10px">Data Insights : <span class="font-italic" style="font-size: 14px">Maximum</span>
-                    </div>
+                    <div style="font-size: 18px; margin-bottom: 10px">Data Insights : <span class="font-italic" style="font-size: 14px">Maximum</span></div>
                     <table class="table table-sm table-bordered table-striped font-weight-light">
-                        <tr>
-                            <td class="font-weight-normal"><span class="font-weight-bold"
-                                                                 style="color: #007bff;">Confirmed</span> - <span
+                        <tr class="font-weight-normal">
+                            <td><span class="font-weight-bold" style="color: #007bff;">Confirmed</span> - <span
                                         class="font-italic">State (cumulative)</span></td>
-                            <td class="font-weight-bold">{{index .data.Insights "hcs"}}
-                                <span style="color: #007bff; font-size: 11px"> [{{index .data.Insights "hcn"}}]</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="font-weight-normal"><span class="font-weight-bold"
-                                                                 style="color: #007bff;">Confirmed</span> - <span
-                                        class="font-italic">Pan India</span></td>
-                            <td class="font-weight-bold">{{index .data.Insights "hpicd"}}
-                                <span style="color: #007bff; font-size: 11px"> [{{index .data.Insights "hpicn"}}]</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="font-weight-normal"><span class="font-weight-bold"
-                                                                 style="color: darkgreen;">Cured</span> - <span
-                                        class="font-italic">State (cumulative)</span></td>
-                            <td class="font-weight-bold">{{index .data.Insights "hds"}}
-                                <span style="color: darkgreen; font-size: 11px"> [{{index .data.Insights "hdn"}}]</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="font-weight-normal"><span class="font-weight-bold"
-                                                                 style="color: darkgreen;">Cured</span> - <span
-                                        class="font-italic">Pan India</span></td>
-                            <td class="font-weight-bold">{{index .data.Insights "hpidd"}}
-                                <span style="color: darkgreen; font-size: 11px"> [{{index .data.Insights "hpidn"}}]</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="font-weight-normal"><span class="font-weight-bold"
-                                                                 style="color: darkred;">Death</span> - <span
-                                        class="font-italic">State (cumulative)</span></td>
-                            <td class="font-weight-bold">{{index .data.Insights "hfs"}}
+                            <td>{{index .data.Insights "hcs"}}
                                 <span class="font-weight-bold"
+                                      style="color: #007bff; font-size: 11px"> [{{index .data.Insights "hcn"}}]</span>
+                            </td>
+                        </tr>
+                        <tr class="font-weight-normal">
+                            <td><span class="font-weight-bold" style="color: #007bff;">Confirmed</span> - <span
+                                        class="font-italic">Pan India</span></td>
+                            <td>{{index .data.Insights "hpicd"}}
+                                <span class="font-weight-bold"
+                                      style="color: #007bff; font-size: 11px"> [{{index .data.Insights "hpicn"}}]</span>
+                            </td>
+                        </tr>
+                        <tr class="font-weight-normal">
+                            <td><span class="font-weight-bold" style="color: darkgreen;">Cured</span> - <span
+                                        class="font-italic">State (cumulative)</span></td>
+                            <td>{{index .data.Insights "hds"}}
+                                <span class="font-weight-bold"
+                                      style="color: darkgreen; font-size: 11px"> [{{index .data.Insights "hdn"}}]</span>
+                            </td>
+                        </tr>
+                        <tr class="font-weight-normal">
+                            <td><span class="font-weight-bold" style="color: darkgreen;">Cured</span> - <span
+                                        class="font-italic">Pan India</span></td>
+                            <td>{{index .data.Insights "hpidd"}}
+                                <span class="font-weight-bold"
+                                      style="color: darkgreen; font-size: 11px"> [{{index .data.Insights "hpidn"}}]</span>
+                            </td>
+                        </tr>
+                        <tr class="font-weight-normal">
+                            <td><span class="font-weight-bold" style="color: darkred;">Death</span> - <span
+                                        class="font-italic">State (cumulative)</span></td>
+                            <td>{{index .data.Insights "hfs"}}
+                                <span class="font-weight-bold" class="font-weight-bold"
                                       style="color: darkred; font-size: 11px"> [{{index .data.Insights "hfn"}}]</span>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="font-weight-normal"><span class="font-weight-bold"
-                                                                 style="color: darkred;">Death</span> - <span
+                        <tr class="font-weight-normal">
+                            <td><span class="font-weight-bold" style="color: darkred;">Death</span> - <span
                                         class="font-italic">Pan India</span></td>
-                            <td class="font-weight-bold">{{index .data.Insights "hpifd"}}
-                                <span style="color: darkred; font-size: 11px"> [{{index .data.Insights "hpifn"}}]</span>
+                            <td>{{index .data.Insights "hpifd"}}
+                                <span class="font-weight-bold"
+                                      style="color: darkred; font-size: 11px"> [{{index .data.Insights "hpifn"}}]</span>
                             </td>
                         </tr>
                     </table>
@@ -149,7 +149,7 @@
             <canvas id="covid-test" width="400" height="300"></canvas>
         </div>
         <div class="col-12 col-md-6 col-lg-4 top-on-mobile">
-            <canvas id="closed-cases" width="400" height="250"></canvas>
+            <canvas id="closed-cases" width="400" height="230"></canvas>
         </div>
     </div>
 </div>
@@ -160,35 +160,39 @@
     <div class="row align-items-center">
         <div class="col-12 col-md-6">
             <table class="table table-sm table-bordered table-striped font-weight-light">
-                <tr class="font-weight-normal">
+                <tr class="font-weight-light">
                     <td><span class="font-weight-bold" style="color: #007bff;">Confirmed</span> - <span
                                 class="font-italic">State (cumulative)</span></td>
                     <td>{{index .data.Insights "hcs"}}
-                        <span class="font-weight-bold" style="color: #007bff; font-size: 11px"> [{{index .data.Insights "hcn"}}]</span>
+                        <span class="font-weight-bold"
+                              style="color: #007bff; font-size: 11px"> [{{index .data.Insights "hcn"}}]</span>
                     </td>
                 </tr>
-                <tr class="font-weight-normal">
+                <tr class="font-weight-light">
                     <td><span class="font-weight-bold" style="color: #007bff;">Confirmed</span> - <span
                                 class="font-italic">Pan India</span></td>
                     <td>{{index .data.Insights "hpicd"}}
-                        <span class="font-weight-bold" style="color: #007bff; font-size: 11px"> [{{index .data.Insights "hpicn"}}]</span>
+                        <span class="font-weight-bold"
+                              style="color: #007bff; font-size: 11px"> [{{index .data.Insights "hpicn"}}]</span>
                     </td>
                 </tr>
-                <tr class="font-weight-normal">
+                <tr class="font-weight-light">
                     <td><span class="font-weight-bold" style="color: darkgreen;">Cured</span> - <span
                                 class="font-italic">State (cumulative)</span></td>
                     <td>{{index .data.Insights "hds"}}
-                        <span class="font-weight-bold" style="color: darkgreen; font-size: 11px"> [{{index .data.Insights "hdn"}}]</span>
+                        <span class="font-weight-bold"
+                              style="color: darkgreen; font-size: 11px"> [{{index .data.Insights "hdn"}}]</span>
                     </td>
                 </tr>
-                <tr class="font-weight-normal">
+                <tr class="font-weight-light">
                     <td><span class="font-weight-bold" style="color: darkgreen;">Cured</span> - <span
                                 class="font-italic">Pan India</span></td>
                     <td>{{index .data.Insights "hpidd"}}
-                        <span class="font-weight-bold" style="color: darkgreen; font-size: 11px"> [{{index .data.Insights "hpidn"}}]</span>
+                        <span class="font-weight-bold"
+                              style="color: darkgreen; font-size: 11px"> [{{index .data.Insights "hpidn"}}]</span>
                     </td>
                 </tr>
-                <tr class="font-weight-normal">
+                <tr class="font-weight-light">
                     <td><span class="font-weight-bold" style="color: darkred;">Death</span> - <span
                                 class="font-italic">State (cumulative)</span></td>
                     <td>{{index .data.Insights "hfs"}}
@@ -196,11 +200,12 @@
                               style="color: darkred; font-size: 11px"> [{{index .data.Insights "hfn"}}]</span>
                     </td>
                 </tr>
-                <tr class="font-weight-normal">
+                <tr class="font-weight-light">
                     <td><span class="font-weight-bold" style="color: darkred;">Death</span> - <span
                                 class="font-italic">Pan India</span></td>
                     <td>{{index .data.Insights "hpifd"}}
-                        <span class="font-weight-bold" style="color: darkred; font-size: 11px"> [{{index .data.Insights "hpifn"}}]</span>
+                        <span class="font-weight-bold"
+                              style="color: darkred; font-size: 11px"> [{{index .data.Insights "hpifn"}}]</span>
                     </td>
                 </tr>
             </table>

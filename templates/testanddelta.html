@@ -1,6 +1,5 @@
 <script>
-    var ctx = document.getElementById('covid-test').getContext('2d');
-    new Chart(ctx, {
+    new Chart('covid-test', {
         type: 'bar',
         data: {
             labels: {{.data.Tested.Date}},
@@ -11,7 +10,7 @@
                 backgroundColor: 'rgba(153, 102, 255, 0.2)',
                 borderColor: 'rgb(153, 102, 255)',
                 borderWidth: 1,
-                barThickness: 28,
+                barThickness: 23,
                 yAxisID: "y-axis-1"
             }, {
                 type: 'line',
@@ -41,8 +40,12 @@
                         maxTicksLimit: 8,
                         fontColor: 'rgb(133,88,255)',
                         callback: function(value, index, values) {
-                            return value/1000 + "k";
-                        }
+                            if(value >= 1000) {
+                                return value / 1000 + "k";
+                            }
+                            return value
+                        },
+                        fontSize: 10.5
                     }
                 }, {
                     display: true,
@@ -52,10 +55,17 @@
                         autoSkip: true,
                         maxTicksLimit: 6,
                         beginAtZero: true,
-                        fontColor: 'rgb(255,84,108)'
+                        fontColor: 'rgb(255,84,108)',
+                        fontSize: 10.5
                     },
                     gridLines: {
                         drawOnChartArea: false
+                    }
+                }],
+                xAxes: [{
+                    display: true,
+                    ticks: {
+                        fontSize: 10.5
                     }
                 }]
             },
@@ -78,8 +88,7 @@
         }
     });
 
-    var covidDeltaCtx = document.getElementById('covid-delta').getContext('2d');
-    new Chart(covidDeltaCtx, {
+    new Chart('covid-delta', {
         type: 'line',
         data: {
             labels: {{.data.SeriesDelta.Dates}},
@@ -140,7 +149,8 @@
                     display: true,
                     ticks: {
                         autoSkip: true,
-                        maxTicksLimit: 6
+                        maxTicksLimit: 6,
+                        fontSize: 10.5
                     }
                 }],
                 yAxes: [{
@@ -148,7 +158,8 @@
                     ticks: {
                         beginAtZero: true,
                         autoSkip: true,
-                        maxTicksLimit: 8
+                        maxTicksLimit: 8,
+                        fontSize: 10.5
                     }
                 }]
             },

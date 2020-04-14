@@ -372,7 +372,7 @@ func coronaTested(covidTestChan chan<- *common.CoronaTest, tested []*common.Test
 	testLen := len(cumTest)
 	dates := make([]string, 0)
 	sampleTested := make([]int, 0)
-	for i := testLen - 6; i < testLen; i++ {
+	for i := testLen - 8; i < testLen; i++ {
 		updateTime, _ := time.Parse("2/1/2006", testMapRev[cumTest[i]])
 		dates = append(dates, updateTime.Format("02 Jan"))
 		sampleTested = append(sampleTested, cumTest[i]-cumTest[i-1])

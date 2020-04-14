@@ -1,6 +1,5 @@
 <script>
-    var ctx = document.getElementById('closed-cases').getContext('2d');
-    new Chart(ctx, {
+    new Chart('closed-cases', {
         type: 'horizontalBar',
         data: {
             labels: ['Cured', 'Fatal'],
@@ -24,14 +23,16 @@
                 xAxes: [{
                     ticks: {
                         beginAtZero: true,
-                        stepSize: 10
+                        stepSize: 10,
+                        fontSize: 10.5
                     }
                 }],
                 yAxes: [{
                     display: true,
                     ticks: {
                         maxRotation: 45,
-                        minRotation: 45
+                        minRotation: 45,
+                        fontSize: 10.5
                     }
                 }]
             },

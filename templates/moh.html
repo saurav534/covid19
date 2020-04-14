@@ -32,43 +32,47 @@
 </div>
 <br>
 <div class="container">
-    <div style="font-size: 18px; margin-bottom: 10px">Pan India Status</div>
     <div class="row align-items-center">
         <div class="col-12 col-md-6">
-            <div class="table-responsive">
-                <table class="table table-hover table-sm font-weight-light">
-                    <tr class="table-warning">
-                        <td>Total Cases</td>
-                        <td>{{.data.Total}}</td>
-                    </tr>
-                    <tr class="table-active">
-                        <td>Active COVID 2019 cases</td>
-                        <td>{{.data.Active}}</td>
-                    </tr>
-                    <tr class="table-success">
-                        <td>Cured/discharged cases</td>
-                        <td>{{.data.Cured}}</td>
-                    </tr>
-                    <tr class="table-danger">
-                        <td>Death</td>
-                        <td>{{.data.Death}}</td>
-                    </tr>
-                    <tr class="table-info">
-                        <td>Migrated COVID-19 Patient</td>
-                        <td>{{.data.Migrated}}</td>
-                    </tr>
-                </table>
+            <div class="column">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="column small-card" style="background: #ffeeba;">
+                            <div class="heading">Total</div>
+                            <div class="content">{{.data.Total}}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="column small-card" style="background: #dadada;">
+                            <div class="heading">Active</div>
+                            <div class="content">{{.data.Active}}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="column small-card" style="background: #c3e6cb;">
+                            <div class="heading">Cured</div>
+                            <div class="content">{{.data.Cured}}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="column small-card" style="background: #f5c6cb;">
+                            <div class="heading">Fatal</div>
+                            <div class="content">{{.data.Death}}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="column small-card" style="background: #bfe5eb;">
+                            <div class="heading">Migrated</div>
+                            <div class="content">{{.data.Migrated}}</div>
+                        </div>
+                    </div>
+                </div>
+                <br class="d-none d-md-block">
+                <canvas id="closed-cases" width="400" max-height="250"></canvas>
             </div>
         </div>
         <div class="col-12 col-md-6" style="padding: 0">
             <div id="india-map" class="chart--container"></div>
-        </div>
-    </div>
-</div>
-<div class="container">
-    <div class="row align-items-center">
-        <div class="col-12 col-md-6">
-            <canvas id="closed-cases" width="400" max-height="250"></canvas>
         </div>
     </div>
 </div>
