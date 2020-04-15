@@ -54,6 +54,7 @@ func UpdateCrowdData() {
 	}
 	if err != nil {
 		log.Printf("Error while updating crowd data, %v", err)
+		return
 	}
 
 	bytes, _ := ioutil.ReadAll(resp.Body)
@@ -103,8 +104,11 @@ func UpdateCrowdData() {
 		}
 	}
 	update.SeriesDelta = <-covidDeltaChan
-	update.Tested = <-coronaTestChan
-	update.Tested.ConfirmRate = getConfirmRate(update)
+	tested, ok := <-coronaTestChan
+	if ok {
+		update.Tested = tested
+		update.Tested.ConfirmRate = getConfirmRate(update)
+	}
 
 	if mohData != nil {
 		update.Facebook = mohData.Facebook
@@ -327,7 +331,11 @@ func seriesDelta(seriesChan chan<- *common.CovidDelta, seriesData []*common.Case
 	if strings.Contains(seriesData[l-1].Date, dateToday) {
 		l = l - 1
 	}
-	for i := l - 21; i < l; i++ {
+	i := l - 21
+	if i < 0 {
+		i = 0
+	}
+	for ; i < l; i++ {
 		data := seriesData[i]
 		dateString := data.Date[:6]
 		dates = append(dates, dateString)
@@ -372,7 +380,11 @@ func coronaTested(covidTestChan chan<- *common.CoronaTest, tested []*common.Test
 	testLen := len(cumTest)
 	dates := make([]string, 0)
 	sampleTested := make([]int, 0)
-	for i := testLen - 8; i < testLen; i++ {
+	i := testLen - 8
+	if i < 0 {
+		i = 0
+	}
+	for ; i < testLen; i++ {
 		updateTime, _ := time.Parse("2/1/2006", testMapRev[cumTest[i]])
 		dates = append(dates, updateTime.Format("02 Jan"))
 		sampleTested = append(sampleTested, cumTest[i]-cumTest[i-1])
