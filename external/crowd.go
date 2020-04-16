@@ -384,8 +384,16 @@ func coronaTested(covidTestChan chan<- *common.CoronaTest, tested []*common.Test
 	if i < 0 {
 		i = 0
 	}
+	var last time.Time
 	for ; i < testLen; i++ {
-		updateTime, _ := time.Parse("2/1/2006", testMapRev[cumTest[i]])
+		var updateTime time.Time
+		if testMapRev[cumTest[i]] == "" {
+			updateTime = last.AddDate(0,0,1)
+			last = updateTime
+		} else {
+			updateTime, _ = time.Parse("2/1/2006", testMapRev[cumTest[i]])
+			last = updateTime
+		}
 		dates = append(dates, updateTime.Format("02 Jan"))
 		sampleTested = append(sampleTested, cumTest[i]-cumTest[i-1])
 		updateTime.Format("02 Jan")
