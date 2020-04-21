@@ -258,14 +258,24 @@ func setPanIndiaData(update *common.CoronaUpdate, data *common.Statewise) {
 func getConfirmRate(update *common.CoronaUpdate) []float32 {
 	dc := update.SeriesDelta.DateToConfirmed
 	confirmRate := make([]float32, 0)
+	lastTestDate, _ := time.Parse("02 Jan 2006", update.Tested.Date[0]+" 2020")
 	for i, d := range update.Tested.Date {
+		currentDate, _ := time.Parse("02 Jan 2006", d+" 2020")
+		dayDiff := currentDate.Day() - lastTestDate.Day()
 		c := dc[d]
 		if i == len(update.Tested.Date)-1 && c == 0 {
 			newConfirmed, _ := strconv.Atoi(update.Delta.Confirmed)
 			c = newConfirmed
 		}
+		if dayDiff > 1 {
+			update.Tested.Date[i] = fmt.Sprintf("%v-%v", currentDate.Day()-dayDiff+1, update.Tested.Date[i])
+		}
+		for ; dayDiff > 1; dayDiff-- {
+			c = c + dc[currentDate.AddDate(0, 0, -1*(dayDiff-1)).Format("02 Jan")]
+		}
 		rate := (float32(c) * 100.0) / float32(update.Tested.TotalSample[i])
 		confirmRate = append(confirmRate, float32(math.Round(float64(rate)*100)/100))
+		lastTestDate = currentDate
 	}
 	return confirmRate
 }
@@ -388,15 +398,13 @@ func coronaTested(covidTestChan chan<- *common.CoronaTest, tested []*common.Test
 	for ; i < testLen; i++ {
 		var updateTime time.Time
 		if testMapRev[cumTest[i]] == "" {
-			updateTime = last.AddDate(0,0,1)
-			last = updateTime
+			updateTime = last.AddDate(0, 0, 1)
 		} else {
 			updateTime, _ = time.Parse("2/1/2006", testMapRev[cumTest[i]])
-			last = updateTime
 		}
 		dates = append(dates, updateTime.Format("02 Jan"))
 		sampleTested = append(sampleTested, cumTest[i]-cumTest[i-1])
-		updateTime.Format("02 Jan")
+		last = updateTime
 	}
 	covidTestChan <- &common.CoronaTest{
 		Date:        dates,

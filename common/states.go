@@ -45,34 +45,34 @@ func init() {
 }
 
 func GetInfectColor(cnf int32) string{
-	if cnf > 2000 {
+	if cnf > 4000 {
 		return "#8b0000"
 	}
-	if cnf > 1700 {
+	if cnf > 3000 {
 		return "#960f0f"
 	}
-	if cnf > 1400 {
+	if cnf > 2500 {
 		return "#a01e1e"
 	}
-	if cnf > 1100 {
+	if cnf > 2000 {
 		return "#a92929"
 	}
-	if cnf > 900 {
+	if cnf > 1500 {
 		return "#b33c3c"
 	}
-	if cnf > 700 {
+	if cnf > 1200 {
 		return "#bb4d4d"
 	}
-	if cnf > 600 {
+	if cnf > 1000 {
 		return "#bf5b5b"
 	}
-	if cnf > 500 {
+	if cnf > 800 {
 		return "#c76b6b"
 	}
-	if cnf > 400 {
+	if cnf > 600 {
 		return "#d07c7c"
 	}
-	if cnf > 300 {
+	if cnf >400 {
 		return "#d48787"
 	}
 	if cnf >200 {
