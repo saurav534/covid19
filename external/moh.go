@@ -155,7 +155,7 @@ func setStateWise(tbody *html.Node, update *common.CoronaUpdate) {
 					switch index {
 					case 0:
 					case 1:
-						st.Name = td.FirstChild.Data
+						st.Name = strings.Trim(td.FirstChild.Data, "#")
 					case 2:
 						st.Total = td.FirstChild.Data
 					case 3:
