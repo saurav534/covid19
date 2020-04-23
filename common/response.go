@@ -15,6 +15,7 @@ type CoronaUpdate struct {
 	StateWise         []*StateData
 	DistrictWise      string
 	SampleTested      string
+	TestResource      string
 	HelpLine          string
 	Faq               string
 	Youtube           string

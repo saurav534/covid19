@@ -84,6 +84,9 @@ func UpdateCrowdData() {
 	}()
 
 	for i := len(cs.Tested) - 1; i >= 0; i-- {
+		if update.TestResource == "" {
+			update.TestResource = cs.Tested[i].Source
+		}
 		if strings.Trim(cs.Tested[i].Totalsamplestested, " ") != "" {
 			update.SampleTested = cs.Tested[i].Totalsamplestested
 			break
@@ -270,6 +273,7 @@ func getConfirmRate(update *common.CoronaUpdate) []float32 {
 		if dayDiff > 1 {
 			update.Tested.Date[i] = fmt.Sprintf("%v-%v", currentDate.Day()-dayDiff+1, update.Tested.Date[i])
 		}
+
 		for ; dayDiff > 1; dayDiff-- {
 			c = c + dc[currentDate.AddDate(0, 0, -1*(dayDiff-1)).Format("02 Jan")]
 		}
@@ -373,7 +377,14 @@ func coronaTested(covidTestChan chan<- *common.CoronaTest, tested []*common.Test
 	for _, test := range tested {
 		st := strings.Trim(test.Totalsamplestested, " ")
 		if st != "" {
-			date := strings.Split(test.Updatetimestamp, " ")[0]
+			var date string
+			if strings.Contains(test.Source, "AM_IST") {
+				testDate, _ := time.Parse("02/01/2006 15:04:05", test.Updatetimestamp)
+				testDate = testDate.AddDate(0, 0, -1)
+				date = testDate.Format("02/01/2006")
+			} else {
+				date = strings.Split(test.Updatetimestamp, " ")[0]
+			}
 			i, err := strconv.Atoi(st)
 			if err == nil {
 				testMap[date] = i
@@ -400,7 +411,7 @@ func coronaTested(covidTestChan chan<- *common.CoronaTest, tested []*common.Test
 		if testMapRev[cumTest[i]] == "" {
 			updateTime = last.AddDate(0, 0, 1)
 		} else {
-			updateTime, _ = time.Parse("2/1/2006", testMapRev[cumTest[i]])
+			updateTime, _ = time.Parse("02/01/2006", testMapRev[cumTest[i]])
 		}
 		dates = append(dates, updateTime.Format("02 Jan"))
 		sampleTested = append(sampleTested, cumTest[i]-cumTest[i-1])

@@ -75,7 +75,11 @@
                     <div class="col-4 middle">
                         <div class="column small-card" style="background: #bfe5eb;">
                             <div class="heading">Tested</div>
-                            <div class="content">{{.data.SampleTested}}</div>
+                            <div class="content">{{.data.SampleTested}}
+                                {{if ne .data.TestResource ""}}
+                                    <span style="font-size: 10px"><a style="color: blue;" href="{{.data.TestResource}}">[source]</a></span>
+                                {{ end }}
+                            </div>
                         </div>
                     </div>
                 </div>
