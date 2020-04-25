@@ -7,7 +7,7 @@
                     {{ range $index, $elem := .data.News.Articles}}
                         <div class="carousel-item {{if eq $index 0}}active{{end}}">
                             <div class="card bg-light" style="width: 100%; margin: auto">
-                                <img src="{{$elem.URLToImage}}" class="card-img-top" alt="News Image" height="220px">
+                                <img src="{{if ne $elem.URLToImage ""}}{{$elem.URLToImage}}{{end}}{{if eq $elem.URLToImage ""}}https://dummyimage.com/600x400/fefefe/bfbfbf&text=++++NEWS++++{{end}}" class="card-img-top" alt="News Image" height="220px">
                                 <div class="card-body">
                                     <div class="card-title">{{$elem.Title}}</div>
                                     <p class="card-text">{{$elem.Description}}</p>
