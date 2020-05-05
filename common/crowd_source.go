@@ -46,21 +46,24 @@ type StateDistrict struct {
 }
 
 type PerDistrict struct {
-	Confirmed       int32  `json:"confirmed"`
-	Lastupdatedtime string `json:"lastupdatedtime"`
-	Delta           CDDelta  `json:"delta"`
+	Active    int32   `json:"active"`
+	Confirmed int32   `json:"confirmed"`
+	Deceased  int32   `json:"deceased"`
+	Recovered int32   `json:"recovered"`
+	Delta     CDDelta `json:"delta"`
 }
 
 type CDDelta struct {
-	Active    int `json:"active"`
 	Confirmed int `json:"confirmed"`
-	Deaths    int `json:"deaths"`
+	Deceased  int `json:"deceased"`
 	Recovered int `json:"recovered"`
 }
 
 type CovidDistrict struct {
-	Name            string
-	Confirmed       int32  `json:"confirmed"`
-	Lastupdatedtime string `json:"lastupdatedtime"`
-	Delta           Delta  `json:"delta"`
+	Name      string
+	Active    int32 `json:"active"`
+	Confirmed int32 `json:"confirmed"`
+	Deceased  int32 `json:"deceased"`
+	Recovered int32 `json:"recovered"`
+	Delta     Delta `json:"delta"`
 }

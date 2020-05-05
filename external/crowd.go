@@ -139,11 +139,15 @@ func toStateToDistrictList(stateDistrictData map[string]*common.StateDistrict) m
 		for _, val := range reflect.ValueOf(districts).MapKeys() {
 			districtData := districts[val.String()]
 			covidDistrict = append(covidDistrict, &common.CovidDistrict{
-				Name:            val.String(),
-				Confirmed:       districtData.Confirmed,
-				Lastupdatedtime: districtData.Lastupdatedtime,
+				Name:      val.String(),
+				Active:    districtData.Active,
+				Confirmed: districtData.Confirmed,
+				Deceased:  districtData.Deceased,
+				Recovered: districtData.Recovered,
 				Delta: common.Delta{
 					Confirmed: strconv.Itoa(districtData.Delta.Confirmed),
+					Recovered: strconv.Itoa(districtData.Delta.Recovered),
+					Deaths:    strconv.Itoa(districtData.Delta.Deceased),
 				},
 			})
 		}
