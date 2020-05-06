@@ -5,11 +5,14 @@
 {{template "baseheader.html" .}}
 <script>
     function cdst(stat, id) {
-        $("#total-" + id).css("display", "none");
-        $("#active-" + id).css("display", "none");
-        $("#cured-" + id).css("display", "none");
-        $("#fatal-" + id).css("display", "none");
-        $("#" + stat + "-" + id).css("display", "");
+        $(".btn-dis-stat-"+id).removeClass("btn-outline-dark").addClass("btn-dark");
+        $("#btn-" + stat + "-" + id).removeClass("btn-dark").addClass("btn-outline-dark");
+
+        $(".total-" + id).css("display", "none");
+        $(".active-" + id).css("display", "none");
+        $(".cured-" + id).css("display", "none");
+        $(".fatal-" + id).css("display", "none");
+        $("." + stat + "-" + id).css("display", "");
     }
 </script>
 <body>
@@ -289,141 +292,50 @@
                                     </a>
                                 </div>
                                 <div class="collapse district-wise" id="district-{{.Id}}">
-                                    <div id="total-{{.Id}}">
-                                        <div class="btn-group w-100" role="group" aria-label="type switch">
-                                            <button type="button" class="btn btn-sm btn-outline-dark">Total
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-dark active-source"
-                                                    onclick="cdst('active',{{.Id}})">Active
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-dark active-source"
-                                                    onclick="cdst('cured',{{.Id}})">Cured
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-dark active-source"
-                                                    onclick="cdst('fatal',{{.Id}})">Fatal
-                                            </button>
-                                        </div>
-                                        <div class="card card-body text-dark">
-                                            <div class="row">
-                                                {{ with .District}}
-                                                    {{ range . }}
-                                                        <div class="col-6">
-                                                            <div class="row">
-                                                                <div class="col-8 font-weight-bold"
-                                                                     style="font-size: 11px; padding-right: 0; padding-left: 13px">{{.Name}}</div>
-                                                                <div class="col-4 font-weight-light"
-                                                                     style="font-size: 11px; padding-right: 5px; padding-left: 3px">{{.Confirmed}}
-                                                                    {{if ne .Delta.Confirmed "0"}}
-                                                                        <span style="color: #e23028; font-size: 10px"> [+{{.Delta.Confirmed}}]</span>
-                                                                    {{ end }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    {{ end }}
-                                                {{ end }}
-                                            </div>
-                                        </div>
+                                    <div class="btn-group w-100" role="group" aria-label="type switch">
+                                        <button id="btn-total-{{.Id}}" type="button" class="btn btn-sm btn-dis-stat-{{.Id}} btn-outline-dark"
+                                                onclick="cdst('total',{{.Id}})">Total
+                                        </button>
+                                        <button id="btn-active-{{.Id}}" type="button" class="btn btn-sm btn-dis-stat-{{.Id}} btn-dark"
+                                                onclick="cdst('active',{{.Id}})">Active
+                                        </button>
+                                        <button id="btn-cured-{{.Id}}" type="button" class="btn btn-sm btn-dis-stat-{{.Id}} btn-dark"
+                                                onclick="cdst('cured',{{.Id}})">Cured
+                                        </button>
+                                        <button id="btn-fatal-{{.Id}}" type="button" class="btn btn-sm btn-dis-stat-{{.Id}} btn-dark"
+                                                onclick="cdst('fatal',{{.Id}})">Fatal
+                                        </button>
                                     </div>
-                                    <div id="active-{{.Id}}" style="display: none">
-                                        <div class="btn-group w-100" role="group" aria-label="type switch">
-                                            <button type="button" class="btn btn-sm btn-dark"
-                                                    onclick="cdst('total',{{.Id}})">Total
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-dark">Active
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-dark"
-                                                    onclick="cdst('cured',{{.Id}})">Cured
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-dark"
-                                                    onclick="cdst('fatal',{{.Id}})">Fatal
-                                            </button>
-                                        </div>
-                                        <div class="card card-body text-dark">
-                                            <div class="row">
-                                                {{ with .District}}
-                                                    {{ range . }}
-                                                        <div class="col-6">
-                                                            <div class="row">
-                                                                <div class="col-8 font-weight-bold"
-                                                                     style="font-size: 11px; padding-right: 0; padding-left: 13px">{{.Name}}</div>
-                                                                <div class="col-4 font-weight-light"
-                                                                     style="font-size: 11px; padding-right: 5px; padding-left: 3px">{{.Active}}
-                                                                </div>
-                                                            </div>
+                                    <div class="card card-body text-dark">
+                                        <div class="row">
+                                            {{$sid := .Id}}
+                                            {{ range $index, $elem := .District}}
+                                                <div class="col-6">
+                                                    <div class="row">
+                                                        <div class="col-8 font-weight-bold"
+                                                             style="font-size: 11px; padding-right: 0; padding-left: 13px">{{$elem.Name}}</div>
+                                                        <div class="col-4 font-weight-light"
+                                                             style="font-size: 11px; padding-right: 5px; padding-left: 3px">
+                                                                    <span class="total-{{$sid}}">{{$elem.Confirmed}}
+                                                                        {{if ne $elem.Delta.Confirmed "0"}}
+                                                                            <span style="color: #e23028; font-size: 10px"> [+{{$elem.Delta.Confirmed}}]</span>
+                                                                        {{ end }}</span>
+                                                            <span class="active-{{$sid}}"
+                                                                  style="display: none">{{$elem.Active}}</span>
+                                                            <span class="cured-{{$sid}}"
+                                                                  style="display: none">{{$elem.Recovered}}
+                                                                {{if ne $elem.Delta.Recovered "0"}}
+                                                                    <span style="color: green; font-size: 10px"> [+{{$elem.Delta.Recovered}}]</span>
+                                                                {{ end }}</span>
+                                                            <span class="fatal-{{$sid}}"
+                                                                  style="display: none">{{$elem.Deceased}}
+                                                                {{if ne $elem.Delta.Deaths "0"}}
+                                                                    <span style="color: #e23028; font-size: 10px"> [+{{$elem.Delta.Deaths}}]</span>
+                                                                {{ end }}</span>
                                                         </div>
-                                                    {{ end }}
-                                                {{ end }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="cured-{{.Id}}" style="display: none">
-                                        <div class="btn-group w-100" role="group" aria-label="type switch">
-                                            <button type="button" class="btn btn-sm btn-dark"
-                                                    onclick="cdst('total',{{.Id}})">Total
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-dark"
-                                                    onclick="cdst('active',{{.Id}})">Active
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-dark">Cured
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-dark"
-                                                    onclick="cdst('fatal',{{.Id}})">Fatal
-                                            </button>
-                                        </div>
-                                        <div class="card card-body text-dark">
-                                            <div class="row">
-                                                {{ with .District}}
-                                                    {{ range . }}
-                                                        <div class="col-6">
-                                                            <div class="row">
-                                                                <div class="col-8 font-weight-bold"
-                                                                     style="font-size: 11px; padding-right: 0; padding-left: 13px">{{.Name}}</div>
-                                                                <div class="col-4 font-weight-light"
-                                                                     style="font-size: 11px; padding-right: 5px; padding-left: 3px">{{.Recovered}}
-                                                                    {{if ne .Delta.Recovered "0"}}
-                                                                        <span style="color: green; font-size: 10px"> [+{{.Delta.Recovered}}]</span>
-                                                                    {{ end }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    {{ end }}
-                                                {{ end }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="fatal-{{.Id}}" style="display: none">
-                                        <div class="btn-group w-100" role="group" aria-label="type switch">
-                                            <button type="button" class="btn btn-sm btn-dark"
-                                                    onclick="cdst('total',{{.Id}})">Total
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-dark"
-                                                    onclick="cdst('active',{{.Id}})">Active
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-dark"
-                                                    onclick="cdst('cured',{{.Id}})">Cured
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-dark">Fatal
-                                            </button>
-                                        </div>
-                                        <div class="card card-body text-dark">
-                                            <div class="row">
-                                                {{ with .District}}
-                                                    {{ range . }}
-                                                        <div class="col-6">
-                                                            <div class="row">
-                                                                <div class="col-8 font-weight-bold"
-                                                                     style="font-size: 11px; padding-right: 0; padding-left: 13px">{{.Name}}</div>
-                                                                <div class="col-4 font-weight-light"
-                                                                     style="font-size: 11px; padding-right: 5px; padding-left: 3px">{{.Deceased}}
-                                                                    {{if ne .Delta.Deaths "0"}}
-                                                                        <span style="color: #e23028; font-size: 10px"> [+{{.Delta.Deaths}}]</span>
-                                                                    {{ end }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    {{ end }}
-                                                {{ end }}
-                                            </div>
+                                                    </div>
+                                                </div>
+                                            {{ end }}
                                         </div>
                                     </div>
                                 </div>
