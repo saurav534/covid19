@@ -7,3 +7,4 @@ deploy:
   provider: gae
   keyfile: "client-secret.json"
   project: "covid-india-19"
+  no_promote: true
