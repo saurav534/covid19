@@ -20,7 +20,7 @@ func main() {
 	engine.LoadHTMLGlob("templates/*")
 	engine.Static("/static", "./static")
 	engine.RedirectFixedPath = true
-	external.UpdateMohData()
+	//external.UpdateMohData()
 	external.UpdateCrowdData()
 	engine.GET("/", func(context *gin.Context) {
 		coronaUpdate := external.GetCrowdData()
@@ -42,19 +42,21 @@ func main() {
 		context.Abort()
 	})
 	engine.GET("/moh", func(context *gin.Context) {
-		coronaUpdate := external.GetMohData()
-		context.HTML(
-			// Set the HTTP status to 200 (OK)
-			http.StatusOK,
-			// Use the moh.html template
-			"moh.html",
-			// Pass the data that the page uses (in this case, 'title')
-			gin.H{
-				"title":   "COVID-19",
-				"nextTab": "/",
-				"data":    coronaUpdate,
-			},
-		)
+		context.Redirect(http.StatusMovedPermanently, "/")
+		context.Abort()
+		//coronaUpdate := external.GetMohData()
+		//context.HTML(
+		//	// Set the HTTP status to 200 (OK)
+		//	http.StatusOK,
+		//	// Use the moh.html template
+		//	"moh.html",
+		//	// Pass the data that the page uses (in this case, 'title')
+		//	gin.H{
+		//		"title":   "COVID-19",
+		//		"nextTab": "/",
+		//		"data":    coronaUpdate,
+		//	},
+		//)
 	})
 
 	cron = external.NewCron()
