@@ -382,8 +382,8 @@ func coronaTested(covidTestChan chan<- *common.CoronaTest, tested []*common.Test
 		st := strings.Trim(test.Totalsamplestested, " ")
 		if st != "" {
 			var date string
-			if strings.Contains(test.Source, "AM_IST") {
-				testDate, _ := time.Parse("02/01/2006 15:04:05", test.Updatetimestamp)
+			testDate, _ := time.Parse("02/01/2006 15:04:05", test.Updatetimestamp)
+			if testDate.Hour() < 12 {
 				testDate = testDate.AddDate(0, 0, -1)
 				date = testDate.Format("02/01/2006")
 			} else {
