@@ -1,8 +1,10 @@
 language: go
 go:
-  - 1.13.x
+- 1.13.x
 before_install:
-  - openssl aes-256-cbc -K $encrypted_2fd045226a67_key -iv $encrypted_2fd045226a67_iv -in client-secret.json.enc -out client-secret.json -d
+- openssl aes-256-cbc -K $encrypted_d201e52361da_key -iv $encrypted_d201e52361da_iv
+  -in covid-india-19-f79d7ca65f0d.json.enc -out covid-india-19-f79d7ca65f0d.json -d
+
 deploy:
   provider: gae
   keyfile: client-secret.json
