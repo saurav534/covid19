@@ -38,7 +38,7 @@ type Tested struct {
 	Totalindividualstested      string `json:"totalindividualstested"`
 	Totalpositivecases          string `json:"totalpositivecases"`
 	Totalsamplestested          string `json:"totalsamplestested"`
-	Updatetimestamp             string `json:"lp"`
+	Updatetimestamp             string `json:"updatetimestamp"`
 }
 
 type StateDistrict struct {
